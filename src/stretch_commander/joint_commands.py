@@ -20,11 +20,11 @@ class StretchManipulation:
             rospy.logerr("Failed to connect to the trajectory server.")
             return
         
-        rospy.loginfo("<CHECK> {0}: Made contact with trajectory server".format(self.__class__.__name__))
+        rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Made contact with trajectory server")
         self.trajectory_goal = FollowJointTrajectoryGoal()
         self.point0 = JointTrajectoryPoint()
 
-    # Home the robot for the first time after bootup
+    # Home the robot for the first time after boot. Not necessary after that.
     def trigger_home_the_robot(self):
         rospy.wait_for_service("/calibrate_the_robot")
         try:
@@ -47,27 +47,92 @@ class StretchManipulation:
         self.trajectory_goal.trajectory.points = [self.point0]
         
         self.trajectory_client.send_goal(self.trajectory_goal)
-        rospy.loginfo("Sent goal = {0}".format(self.trajectory_goal))
+
+        goal_info = ', '.join(f'{joint}: {value}' for joint, value in zip(joint_names, goal_values))
+        rospy.loginfo(f"Sent joint goals: {goal_info}")
+        rospy.loginfo(f"Trajectory goal message = {self.trajectory_goal}")
         self.trajectory_client.wait_for_result()
 
     def gripper_close(self):
-        rospy.loginfo("{0}: Closing gripper".format(self.__class__.__name__))
-        self.send_joint_goals(['joint_gripper_finger_left'], [0.165])
-
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Closing the gripper")
+        self.send_joint_goals(['joint_gripper_finger_left'], [-0.25])
+        rospy.loginfo("-*- -*- -*-")
 
     def gripper_open(self):
-        rospy.loginfo("{0}: Opening gripper".format(self.__class__.__name__))
-        self.send_joint_goals(["joint_gripper_finger_left"], [-0.35])
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Opening the gripper")
+        self.send_joint_goals(["joint_gripper_finger_left"], [1.65])
+        rospy.loginfo("-*- -*- -*-")
 
+    def arm_extend(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Extending the arm")
+        self.send_joint_goals(["wrist_extension"], [0.40])
+        rospy.loginfo("-*- -*- -*-")
 
-    def lift_up(self):
-        rospy.loginfo("{0}: Lifting arm up".format(self.__class__.__name__))
+    def arm_fold(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Folding the arm")
+        self.send_joint_goals(["wrist_extension"], [0.10])
+        rospy.loginfo("-*- -*- -*-")
+
+    def arm_up(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Lifting the arm up")
         self.send_joint_goals(["joint_lift"], [1.00])
+        rospy.loginfo("-*- -*- -*-")
 
+    def arm_down(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Dropping the arm down")
+        self.send_joint_goals(["joint_lift"], [0.15])
+        rospy.loginfo("-*- -*- -*-")
 
-    def reach_down(self):
-        rospy.loginfo("{0}: Dropping arm down".format(self.__class__.__name__))
-        self.send_joint_goals(["joint_lift"], [0.2])
+    def wrist_down(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist down")
+        self.send_joint_goals(["joint_wrist_pitch"], [-1.5])
+        rospy.loginfo("-*- -*- -*-")
+
+    def wrist_up(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist up")
+        self.send_joint_goals(["joint_wrist_pitch"], [0.0])
+        rospy.loginfo("-*- -*- -*-")
+
+    def wrist_out(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist out")
+        self.send_joint_goals(["joint_wrist_yaw"], [0.0])
+        rospy.loginfo("-*- -*- -*-")
+
+    def wrist_in(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist in")
+        self.send_joint_goals(["joint_wrist_yaw"], [3.14])
+        rospy.loginfo("-*- -*- -*-")
 
 # End of class
 ########################################################################################################################
+'''
+############################# JOINT LIMITS #############################
+joint_lift: {0.15m - 1.10m}
+wrist_extension: {0.00m - 0.50m}
+joint_wrist_yaw: {-1.75rad - 4.00rad}
+joint_head_pan: {-2.80rad - 2.90rad}
+joint_head_tilt: {-1.60rad - 0.40rad}
+joint_gripper_finger_left: {-0.35rad - 0.165rad}
+
+########################## All Joint Names ############################
+[Arm] joint_lift, wrist_extension = (joint_arm_l0 + joint_arm_l1 + joint_arm_l2 + joint_arm_l3)
+[Gripper] joint_gripper_finger_left OR joint_gripper_finger_right
+[Head] joint_head_pan, joint_head_tilt
+[Wrist] joint_wrist_pitch, joint_wrist_yaw, joint_wrist_roll
+[Base] joint_left_wheel, joint_right_wheel
+
+# INCLUDED JOINTS IN POSITION MODE - Relative (not tested yet)
+translate_mobile_base: No lower or upper limit. Defined by a step size in meters
+rotate_mobile_base:    No lower or upper limit. Defined by a step size in radians
+########################################################################
+'''

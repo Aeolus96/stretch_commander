@@ -19,7 +19,7 @@ class StretchNavigation:
             rospy.logerr("Failed to connect to the move_base server.")
             sys.exit(1)  # exit because Navigation wont work without a MoveBase server
 
-        rospy.loginfo("<CHECK> {0}: Made contact with move_base server".format(self.__class__.__name__))
+        rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Made contact with move_base server")
         # define the goal message
         self.goal = MoveBaseGoal()
         self.goal.target_pose.header.frame_id = frame_id
@@ -29,7 +29,6 @@ class StretchNavigation:
         rospy.wait_for_service("/funmap/trigger_global_localization")
         try:
             trigger_loc = rospy.ServiceProxy("/funmap/trigger_global_localization", Trigger)
-
             response = trigger_loc()
             return response.message
         except rospy.ServiceException as e:
@@ -54,13 +53,17 @@ class StretchNavigation:
     # Callback for when the goal is reached
     def done_callback(self, status, result):
         if status == actionlib.GoalStatus.SUCCEEDED:
-            rospy.loginfo("{0}: SUCCEEDED in reaching the goal.".format(self.__class__.__name__))
+            rospy.loginfo(f"<CHECK> {self.__class__.__name__}: SUCCEEDED in reaching the goal.")
         else:
-            rospy.loginfo("{0}: FAILED in reaching the goal.".format(self.__class__.__name__))
+            rospy.loginfo(f"<CHECK> {self.__class__.__name__}: FAILED in reaching the goal.")
 
     # x, y, and theta are in meters and radians. Use math.radians(theta) to use degrees
     def go_to(self, x, y, theta, max_retries=3):
-        rospy.loginfo("{0}: Heading for ({1}, {2}) at {3} radians".format(self.__class__.__name__, x, y, theta))
+        if not isinstance(max_retries, int) or max_retries <= 0:
+            raise ValueError("max_retries should be a positive integer.")
+        # Other error checking not needed for this application (though could be added)
+        
+        rospy.loginfo(f"{self.__class__.__name__}: Heading for ({x}, {y}) at {theta} radians")
 
         self.goal.target_pose.header.stamp = rospy.Time()
         self.goal.target_pose.pose.position.x = x
@@ -77,11 +80,7 @@ class StretchNavigation:
             if self.client.get_state() == actionlib.GoalStatus.SUCCEEDED:
                 break
             else:
-                rospy.loginfo(
-                    "{0}: Goal attempt {1}/{2} failed. Retrying...".format(
-                        self.__class__.__name__, retries + 1, max_retries
-                    )
-                )
+                rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Goal attempt {retries + 1}/{max_retries} failed.")
                 retries += 1
 
 
