@@ -104,7 +104,7 @@ class StretchManipulation:
     def wrist_out(self):
         rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist out")
-        self.send_joint_goals(["joint_wrist_yaw"], [0.0])
+        self.send_joint_goals(["joint_wrist_yaw"], [-0.25])
         rospy.loginfo("-*- -*- -*-")
 
     def wrist_in(self):

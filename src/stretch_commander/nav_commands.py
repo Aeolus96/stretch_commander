@@ -1,12 +1,13 @@
-import sys  # for sys.exit
+import sys
 
-import actionlib  # for MoveBase
-import rospy  # for ROS Python
-from geometry_msgs.msg import Quaternion  # for MoveBaseGoal
-from move_base_msgs.msg import MoveBaseAction  # for MoveBase client
-from move_base_msgs.msg import MoveBaseGoal
-from std_srvs.srv import Trigger  # for Triggering services
-from tf import transformations  # for quaternion_from_euler
+from sympy import true  # for sys.exit
+
+import actionlib
+import rospy
+from geometry_msgs.msg import Quaternion, PoseStamped, PointStamped
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from std_srvs.srv import Trigger
+from tf import transformations
 
 
 ########################################################################################################################
@@ -23,6 +24,9 @@ class StretchNavigation:
         # define the goal message
         self.goal = MoveBaseGoal()
         self.goal.target_pose.header.frame_id = frame_id
+        
+        # Create a publisher for the clicked_point topic
+        self.clicked_point_pub = rospy.Publisher('/clicked_point', PointStamped, queue_size=1)
 
     # Re-locates the robot in the loaded map
     def trigger_global_localization(self):
@@ -83,6 +87,23 @@ class StretchNavigation:
                 rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Goal attempt {retries + 1}/{max_retries} failed.")
                 retries += 1
 
+    # Use an Array of PoseStamped to pick up multiple objects on the map
+    def pick_up_objects(self, list_of_object_poses):
+        for obj_pose in list_of_object_poses:
+            # Convert the PoseStamped to a PointStamped
+            point_stamped_msg = PointStamped()
+            point_stamped_msg.header.stamp = rospy.Time.now()
+            # Set the frame ID of the PointStamped to the frame ID of the PoseStamped
+            point_stamped_msg.header.frame_id = obj_pose.header.frame_id
+            # Extract the position from the PoseStamped and set it in the PointStamped
+            point_stamped_msg.point = obj_pose.pose.position
+            # Publish the PointStamped message
+            # TODO:
+
+            self.clicked_point_pub.publish(point_stamped_msg)
+            # Optionally, you might want to wait for a short duration between publishing points
+            rospy.sleep(1)  # Adjust the sleep duration as needed
+    
 
 # End of class
 ########################################################################################################################

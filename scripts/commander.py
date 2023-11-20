@@ -29,3 +29,10 @@ if __name__ == "__main__":
     man.wrist_up()
     man.arm_up()
     man.wrist_in()
+    rospy.sleep(2.0)
+    man.arm_fold()
+    nav.go_to(5.30, 5.75, 0.0)
+    man.wrist_out()
+    man.gripper_open()
+
+    per.find_clothes() # gives a list of clothes
