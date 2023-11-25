@@ -2,8 +2,7 @@ from typing import List
 
 import actionlib
 import rospy
-from control_msgs.msg import (FollowJointTrajectoryAction,
-                              FollowJointTrajectoryGoal)
+from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 from geometry_msgs.msg import PoseStamped
 from std_srvs.srv import Trigger
 from trajectory_msgs.msg import JointTrajectoryPoint
@@ -19,7 +18,7 @@ class StretchManipulation:
         if not server_reached:
             rospy.logerr("Failed to connect to the trajectory server.")
             return
-        
+
         rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Made contact with trajectory server")
         self.trajectory_goal = FollowJointTrajectoryGoal()
         self.point0 = JointTrajectoryPoint()
@@ -34,21 +33,21 @@ class StretchManipulation:
         except rospy.ServiceException as e:
             rospy.logerr(f"Home the robot service call failed: {e}")
             return None
-    
+
     def send_joint_goals(self, joint_names: List[str], goal_values: List[float]):
         if len(joint_names) != len(goal_values):
             rospy.logwarn("Joint names and goal values lists must have the same length.")
             return
 
         self.trajectory_goal.trajectory.header.stamp = rospy.Time.now()
-        self.trajectory_goal.trajectory.header.frame_id = "base_link" # relative to robot base
+        self.trajectory_goal.trajectory.header.frame_id = "base_link"  # relative to robot base
         self.trajectory_goal.trajectory.joint_names = joint_names
         self.point0.positions = goal_values
         self.trajectory_goal.trajectory.points = [self.point0]
-        
+
         self.trajectory_client.send_goal(self.trajectory_goal)
 
-        goal_info = ', '.join(f'{joint}: {value}' for joint, value in zip(joint_names, goal_values))
+        goal_info = ", ".join(f"{joint}: {value}" for joint, value in zip(joint_names, goal_values))
         rospy.loginfo(f"Sent joint goals: {goal_info}")
         rospy.loginfo(f"Trajectory goal message = {self.trajectory_goal}")
         self.trajectory_client.wait_for_result()
@@ -56,7 +55,7 @@ class StretchManipulation:
     def gripper_close(self):
         rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Closing the gripper")
-        self.send_joint_goals(['joint_gripper_finger_left'], [-0.25])
+        self.send_joint_goals(["joint_gripper_finger_left"], [-0.25])
         rospy.loginfo("-*- -*- -*-")
 
     def gripper_open(self):
@@ -113,9 +112,10 @@ class StretchManipulation:
         self.send_joint_goals(["joint_wrist_yaw"], [3.14])
         rospy.loginfo("-*- -*- -*-")
 
+
 # End of class
 ########################################################################################################################
-'''
+"""
 ############################# JOINT LIMITS #############################
 joint_lift: {0.15m - 1.10m}
 wrist_extension: {0.00m - 0.50m}
@@ -135,4 +135,4 @@ joint_gripper_finger_left: {-0.35rad - 0.165rad}
 translate_mobile_base: No lower or upper limit. Defined by a step size in meters
 rotate_mobile_base:    No lower or upper limit. Defined by a step size in radians
 ########################################################################
-'''
+"""
