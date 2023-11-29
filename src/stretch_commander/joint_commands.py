@@ -11,6 +11,8 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 ########################################################################################################################
 class StretchManipulation:
     def __init__(self):
+        self.pointSub = rospy.Subscriber('/camera/results', PointStamped, self.listener)
+        self.lift_object_srvs = rospy.Service('lift_object', Trigger, self.lift_object_service)
         self.trajectory_client = actionlib.SimpleActionClient(
             "/stretch_controller/follow_joint_trajectory", FollowJointTrajectoryAction
         )
@@ -22,6 +24,27 @@ class StretchManipulation:
         rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Made contact with trajectory server")
         self.trajectory_goal = FollowJointTrajectoryGoal()
         self.point0 = JointTrajectoryPoint()
+
+    def listener(self, msg:PointStamped):
+        self.targetPoint = msg.point
+        print("Point received")
+
+    def call_service(self):
+        rospy.wait_for_service('/funmap/move_arm')
+        try:
+            service_proxy = rospy.ServiceProxy('/funmap/move_arm', MoveArm)
+            response = service_proxy(self.targetPoint)
+            print("Service response: ", response)
+        except rospy.ServiceException as e:
+            print("Service call failed: %s" % e)
+
+    def lift_object_service(self, msg):
+        self.gripper_open()
+        self.call_service()
+        response = TriggerResponse()
+        response.success = True
+        response.message = 'Sucess!!'
+        return response  
 
     # Home the robot for the first time after boot. Not necessary after that.
     def trigger_home_the_robot(self):
