@@ -57,6 +57,9 @@ if __name__ == "__main__":
             # Manipulation:
             # TODO: Closest Point -> FUNMAP (Navigation using MoveArm)
             # TODO: Pickup Object
+            
+            nav.pick_up_at_xyz(
+            
 
             # Navigation:
             # TODO: Go to drop off point (Perception: IF time allows, moving drop point)
