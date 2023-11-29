@@ -16,8 +16,10 @@ from ultralytics import YOLO
 rospy.init_node('object_detection_node')
 
 # Specify the path to the model
-model_path = ('/home/terminus/rosproj/models/best.pt')
-# model_path = rospack.get_path("best.pt")
+
+# model_path = ('/home/terminus/rosproj/models/best.pt')
+model_path = rospkg.RosPack().get_path('stretch_commander') +'/models/best.pt'
+
 # print(model_path)
 
 print(torch.cuda.is_available())
