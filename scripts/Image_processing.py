@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
+from rospkg import rospack
 from sensor_msgs.msg import Image
 from std_msgs.msg import Bool
 from cv_bridge import CvBridge
@@ -15,7 +16,9 @@ from ultralytics import YOLO
 rospy.init_node('object_detection_node')
 
 # Specify the path to the model
-model_path = ('/home/terminus/rosproj/src/img_process/scripts/best.pt')
+model_path = ('/home/terminus/rosproj/models/best.pt')
+# model_path = rospack.get_path("best.pt")
+# print(model_path)
 
 print(torch.cuda.is_available())
 
