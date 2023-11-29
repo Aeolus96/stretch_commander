@@ -3,9 +3,12 @@ from typing import List
 import actionlib
 import rospy
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
-from geometry_msgs.msg import PoseStamped
-from std_srvs.srv import Trigger
+from geometry_msgs.msg import PoseStamped, PointStamped, Point
+from std_srvs.srv import Trigger, TriggerResponse
 from trajectory_msgs.msg import JointTrajectoryPoint
+from stretch_srvs.srv import MoveArm
+from std_msgs.msg import String
+
 
 
 ########################################################################################################################
@@ -45,6 +48,12 @@ class StretchManipulation:
         response.success = True
         response.message = 'Sucess!!'
         return response  
+
+    def gripper_open(self):
+        rospy.loginfo("-*- -*- -*-")
+        rospy.loginfo(f"{self.__class__.__name__}: Opening the gripper")
+        self.send_joint_goals(["joint_gripper_finger_left"], [1.65])
+        rospy.loginfo("-*- -*- -*-")
 
     # Home the robot for the first time after boot. Not necessary after that.
     def trigger_home_the_robot(self):
