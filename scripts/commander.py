@@ -57,6 +57,9 @@ if __name__ == "__main__":
             # Manipulation:
             # TODO: Closest Point -> FUNMAP (Navigation using MoveArm)
             # TODO: Pickup Object
+            rospy.init_node("robot_manipulation")
+            sa = StretchManipulation()
+            
 
             # Navigation:
             # TODO: Go to drop off point (Perception: IF time allows, moving drop point)
