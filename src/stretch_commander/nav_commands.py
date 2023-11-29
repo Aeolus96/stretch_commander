@@ -14,7 +14,8 @@ from tf import transformations
 
 ########################################################################################################################
 class StretchNavigation:
-    # Status bar configuration (Alive Bar):
+    # Status bar configuration (Alive Bar): https://pypi.org/project/alive-progress/
+    # NOTE: Nested bars are not supported right now
     bar_config = dict(
         bar=None,
         monitor=False,
@@ -53,7 +54,7 @@ class StretchNavigation:
             try:
                 trigger_loc = rospy.ServiceProxy("/funmap/trigger_global_localization", Trigger)
                 response = trigger_loc()
-                bar.title("Re-locating the robot complete:")
+                bar.title("Re-locating the robot complete")
                 return response.message
             except rospy.ServiceException as e:
                 rospy.logerr(f"Global localization service call failed: {e}")
@@ -67,7 +68,7 @@ class StretchNavigation:
             try:
                 trigger_scan = rospy.ServiceProxy("/funmap/trigger_head_scan", Trigger)
                 response = trigger_scan()
-                bar.title("Scanning the area complete:")
+                bar.title("Scanning the area complete")
                 return response.message
             except rospy.ServiceException as e:
                 rospy.logerr(f"Head scan service call failed: {e}")
@@ -110,9 +111,9 @@ class StretchNavigation:
             return
 
     # x, y, and z are in meters. Uses FunMap clicked_point topic OR MoveArm service
-    def pick_up_at_xyz(self, x, y, z, using_service=False):
+    def pick_up_at_xyz(self, x, y, z, using_service=True):
         with alive_bar(**self.bar_config) as bar:
-            if using_service:  # TODO: MoveArm service - Not working at the moment
+            if using_service:  # MoveArm service call: Default
                 bar.text(f"Sending the pickup point {x}, {y}, {z} to MoveArm service...")
                 rospy.wait_for_service("/funmap/move_arm")
                 try:
@@ -127,7 +128,7 @@ class StretchNavigation:
                     rospy.logerr(f"Service call failed: {e}")
                     return None
 
-            else:  # FunMap clicked_point topic
+            else:  # FunMap clicked_point topic: Alternative
                 bar.text(f"Sending the pickup point {x}, {y}, {z} to FunMap clicked_point topic...")
                 pub = rospy.Publisher("/clicked_point", PoseStamped, queue_size=1)
                 self.clicked_point_goal.header.stamp = rospy.Time.now()
@@ -139,23 +140,6 @@ class StretchNavigation:
                 pub.publish(self.clicked_point_goal)
                 bar.title(f"Point {x}, {y}, {z} reached.")
                 return
-
-    # TODO: Get values from perception module and test this on the robot
-    # Use an Array of PoseStamped to pick up multiple objects on the map
-    def pick_up_objects(self, list_of_object_poses):
-        for obj_pose in list_of_object_poses:
-            # Convert the PoseStamped to a PointStamped
-            point_stamped_msg = PointStamped()
-            point_stamped_msg.header.stamp = rospy.Time.now()
-            # Set the frame ID of the PointStamped to the frame ID of the PoseStamped
-            point_stamped_msg.header.frame_id = obj_pose.header.frame_id
-            # Extract the position from the PoseStamped and set it in the PointStamped
-            point_stamped_msg.point = obj_pose.pose.position
-
-            self.clicked_point_pub.publish(point_stamped_msg)
-            # rospy.sleep(1)  # Adjust the sleep duration as needed
-
-            # TODO: Need Feedback Loop here - could use FUNMAP or custom pose checker
 
 
 # End of class
