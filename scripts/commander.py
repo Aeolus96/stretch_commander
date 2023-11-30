@@ -57,8 +57,12 @@ if __name__ == "__main__":
             # Manipulation:
             # TODO: Closest Point -> FUNMAP (Navigation using MoveArm)
             # TODO: Pickup Object
+
+            x = man.targetPoint.x
+            y = man.targetPoint.y
+            z = man.targetPoint.z
             
-            nav.pick_up_at_xyz(
+            nav.pick_up_at_xyz(x, y, z)
             
 
             # Navigation:
