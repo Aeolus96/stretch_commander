@@ -3,6 +3,7 @@ import rospy
 from stretch_commander.joint_commands import StretchManipulation
 from stretch_commander.nav_commands import StretchNavigation
 from stretch_commander.perception_commands import StretchPerception
+from geometry_msgs.msg import PointStamped
 
 # Commands to start everything on the robot (using ssh on robot):
 """
