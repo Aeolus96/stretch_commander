@@ -20,7 +20,7 @@ class StretchPerception:
         self.point_pub.publish(self.final_points)
 
 
-def bounding_box_callback(self, boxes):
+    def bounding_box_callback(self, boxes):
         #print(data)#MODIFIED TO REFLECT THE CORRECT TOPICS
         #self.bbox_sub = rospy.Subscriber('/Camera
 
