@@ -22,4 +22,4 @@ if __name__ == "__main__":
     nav.go_to_xya(4.0, 3.0, 0.0)  # go to hardcoded scanning pose
     nav.trigger_head_scan()  # Look around to update the map
     
-    print("Mapping complete")
+    rospy.loginfo("Mapping complete")

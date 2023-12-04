@@ -1,6 +1,6 @@
 <launch>
   <!-- Launch your commander.py script -->
-  <node name="commander_node" pkg="tt_commander_node" type="commander.py" output="screen">
+  <node name="stretch_commander" pkg="stretch_commander" type="commander.py" output="screen">
     <!-- Add any command-line arguments if needed -->
     <!-- <param name="param_name" value="param_value" /> -->
   </node>

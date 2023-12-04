@@ -1,21 +1,20 @@
 from typing import List
-
 import actionlib
 import rospy
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
-from geometry_msgs.msg import PoseStamped, PointStamped, Point
-from std_srvs.srv import Trigger, TriggerResponse
+from geometry_msgs.msg import PointStamped, Point
+from std_srvs.srv import Trigger
 from trajectory_msgs.msg import JointTrajectoryPoint
-from stretch_srvs.srv import MoveArm
-from std_msgs.msg import String
-
 
 
 ########################################################################################################################
 class StretchManipulation:
     def __init__(self):
-        self.pointSub = rospy.Subscriber('/camera/results', PointStamped, self.listener)
-        self.lift_object_srvs = rospy.Service('lift_object', Trigger, self.lift_object_service)
+        self.target_point_topic = "/target_point"
+        self.target_point_sub = rospy.Subscriber(self.target_point_topic, PointStamped, self.target_point_callback)
+        self.target_point = Point()
+
+        # Setup the trajectory client for manipulation of joints
         self.trajectory_client = actionlib.SimpleActionClient(
             "/stretch_controller/follow_joint_trajectory", FollowJointTrajectoryAction
         )
@@ -23,37 +22,13 @@ class StretchManipulation:
         if not server_reached:
             rospy.logerr("Failed to connect to the trajectory server.")
             return
-
         rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Made contact with trajectory server")
         self.trajectory_goal = FollowJointTrajectoryGoal()
         self.point0 = JointTrajectoryPoint()
 
-    def listener(self, msg:PointStamped):
-        self.targetPoint = msg.point
-        print("Point received")
-
-    def call_service(self):
-        rospy.wait_for_service('/funmap/move_arm')
-        try:
-            service_proxy = rospy.ServiceProxy('/funmap/move_arm', MoveArm)
-            response = service_proxy(self.targetPoint)
-            print("Service response: ", response)
-        except rospy.ServiceException as e:
-            print("Service call failed: %s" % e)
-
-    def lift_object_service(self, msg):
-        self.gripper_open()
-        self.call_service()
-        response = TriggerResponse()
-        response.success = True
-        response.message = 'Sucess!!'
-        return response  
-
-    def gripper_open(self):
-        rospy.loginfo("-*- -*- -*-")
-        rospy.loginfo(f"{self.__class__.__name__}: Opening the gripper")
-        self.send_joint_goals(["joint_gripper_finger_left"], [1.65])
-        rospy.loginfo("-*- -*- -*-")
+    # Update the target point when received
+    def target_point_callback(self, msg: PointStamped):
+        self.target_point = msg.point
 
     # Home the robot for the first time after boot. Not necessary after that.
     def trigger_home_the_robot(self):
