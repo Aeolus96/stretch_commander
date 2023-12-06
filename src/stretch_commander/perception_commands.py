@@ -228,7 +228,7 @@ class StretchPerception:
                 reduce_dupes=set(point_arr)
                 
         new_point_arr=list(reduce_dupes)
-        final_point=self.find_average(new_point_arr[0],new_point_arr[1:])
+        final_point=self.find_average(new_point_arr[0],new_point_arr[0:])
         self.final_points = final_point
 
     def find_distance(self, point1, point2):
