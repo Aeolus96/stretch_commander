@@ -20,6 +20,7 @@ class StretchPerception:
         self.camera_image_topic = "/camera/depth/color/points"
         self.bbox_sub = rospy.Subscriber(self.bbox_topic, Detection2DArray, self.bounding_box_callback)
         self.image_sub = rospy.Subscriber(self.camera_image_topic, PointCloud2, self.point_cloud_callback)
+        #self.stretch_sub=rospy.Subscriber(self.RObotTopic?, type, self.stretch_location_callback)
 
         # Publishers
         self.trigger_scan_topic = "/trigger_yolo/"
@@ -33,12 +34,17 @@ class StretchPerception:
         self.detections = []  # holds dections from /yolo/results
         self.bbox_time = rospy.Time()
 
+################# BOUNDING BOX CALLBACK FUNCTIONS##########################
+
     def bounding_box_callback(self, boxes):
         # print(data)#MODIFIED TO REFLECT THE CORRECT TOPICS
         # self.bbox_sub = rospy.Subscriber('/Camera
 
         for detection in boxes:
-            self.detections.append(detection)
+            self.detections.append(detection.detections.bbox)
+
+
+################# POINT CLOUD CALLBACK FUNCTIONS###########################
 
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
@@ -51,7 +57,7 @@ class StretchPerception:
             #print(detection)
 
             # access the bounding box points
-            bbox = detection.bbox
+            bbox = detection
 
             width = bbox.size_x
             height = bbox.size_y
@@ -136,8 +142,10 @@ class StretchPerception:
         # These are the points that will be published
         self.final_points = self.cluster_points(all_filtered_points)
         print(self.final_points)
-        self.point_pub.publish(self.final_points)
-    ######### FUNCTIONS USED IN THE BOUNDING BOX CALLBACK ##########
+        self.point_pub(self.final_points)
+        
+        
+        
     def filter_points(self, points):
         # filters all D3 points within one bounding box, and returns the highest point
 
@@ -225,3 +233,46 @@ class StretchPerception:
         avg_point = PointStamped(point.header, self.Point(avg_x, avg_y, avg_z))
 
         return avg_point
+
+        
+    ######### FUNCTIONS USED IN STRETCH LOCATION CALLBACK ##########
+    
+    #takes in all final points and returns a list of points in ascending order based on their distance from the robot
+    '''
+    def stretch_location_callback(self, stretch_location):
+        distances = []
+        
+        stretch_x = stretch_location. #What topic/type?
+        stretch_Y = stretch_location. #what topic/type?
+        stretch_Z = stretch_location. #what topic/type?
+        
+        for detection in self.final_points:
+            detected_X = detection.point.x
+            detected_Y = detection.point.y
+            detected_Z = detection.point.z
+            
+            distance=math.sqrt((detected_X-stretch_x)**2+(detected_Y-stretch_Y)**2+(detected_Z-stretch_Z)**2)
+            distances.append(distance)
+            
+        length=len(distances)
+        if length>=1:
+            self.point_pub(self.final_points[0])
+        else:
+            for i in range(length):
+                for j in range(length-i-1):
+                    if distances[j]>distances[j+1]:
+                        distances[j],distances[j+1]=distances[j+1],distances[j]
+                        self.final_points[j],self.final_points[j+1]=self.final_points[j+1],self.final_points[j]
+        
+            for points in self.final_points:
+                self.point_pub(points)
+            
+            
+        
+        
+        
+        
+        
+        for point in self.final_points:
+            distances.append(self.find_distance(point, robot))
+    '''      
