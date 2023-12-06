@@ -228,6 +228,9 @@ class StretchPerception:
         
         reduce_dupes=set(point_arr)
         new_point_arr=list(reduce_dupes)
+        print("Reduced points:", reduce_dupes)
+        print("new_point_arr: ", new_point_arr)
+        
         final_point=self.find_average(new_point_arr[0],new_point_arr)
         self.final_points = final_point
 
@@ -246,6 +249,13 @@ class StretchPerception:
         return distance
 
     def find_average(self, current_point, point_arr):
+        print("From inside 'find_average': ")
+        print("current/first point length: ", len(current_point))
+        print("length of rest of array: ", len(point_arr))
+        
+        print("current/first point: ", current_point)
+        print("rest of array: ", point_arr)
+        
         # sums
         sum_x = current_point.point.x
         sum_y = current_point.point.y
