@@ -53,18 +53,19 @@ def state_machine(start_state: str):
             # TODO: Change Camera Joints to look around and Trigger Yolo node
             # TODO: Get Bounding Boxes Array (Detection2D Array from YOLO node) -> Closest Point for Pickup
 
+            time.sleep(5)
             man.look_for_shirts(1)
             time.sleep(2)
             per.trigger_yolo()
-            time.sleep(10)
+            time.sleep(5)
             man.look_for_shirts(2)
             time.sleep(2)
             per.trigger_yolo()
-            time.sleep(10)
+            time.sleep(5)
             man.look_for_shirts(3)
             time.sleep(2)
             per.trigger_yolo()
-            time.sleep(10)
+            time.sleep(5)
 
             if per.detected_objects:
                 rospy.loginfo(f"Detection complete. Closest Point: {0.0}, {0.0}, {0.0}")
