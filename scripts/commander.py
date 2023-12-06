@@ -52,12 +52,20 @@ def state_machine(start_state: str):
             # TODO: Change Camera Joints to look around and Trigger Yolo node
             # TODO: Get Bounding Boxes Array (Detection2D Array from YOLO node) -> Closest Point for Pickup
 
-            # if detected_objects:
-            #     rospy.loginfo(f"Detection complete. Closest Point: {0.0}, {0.0}, {0.0}")
-            #     state = "collecting"
-            # else:
-            #     rospy.loginfo("No objects detected")
-            #     state = "detecting"
+            man.look_for_shirts(1)
+            per.trigger_yolo()
+            man.look_for_shirts(2)
+            per.trigger_yolo()
+            man.look_for_shirts(3)
+            per.trigger_yolo()
+
+            if per.detected_objects:
+                rospy.loginfo(f"Detection complete. Closest Point: {0.0}, {0.0}, {0.0}")
+                state = "collecting"
+                per.detected_objects = False
+            else:
+                rospy.loginfo("No objects detected")
+                state = "detecting"
 
         elif state == "collecting":
             # Wait for key press to continue

@@ -1,4 +1,5 @@
 import rospy
+from std_msgs.msg import Bool
 import tf2_ros
 import tf2_geometry_msgs
 import sensor_msgs.point_cloud2 as pc2
@@ -27,6 +28,7 @@ class StretchPerception:
         self.trigger_scan_topic = "/trigger_yolo/"
         self.target_point_topic = "/target_point"
         self.point_pub = rospy.Publisher(self.target_point_topic, PointStamped, queue_size=5)
+        self.trigger_yolo_pub = rospy.Publisher(self.trigger_scan_topic, Bool, queue_size=5)
 
         # Initialize variables and buffers:
         self.all_raw_bbox_points = []
@@ -34,6 +36,13 @@ class StretchPerception:
         self.final_points = []
         self.detections = []  # holds detections from /yolo/results
         self.bbox_time = rospy.Time()
+
+        self.detected_objects = False
+
+    def trigger_yolo(self):
+        msg = Bool()
+        msg.data = True
+        self.trigger_yolo_pub.publish(msg)
 
 ################# BOUNDING BOX CALLBACK FUNCTIONS##########################
 
@@ -43,6 +52,7 @@ class StretchPerception:
 
         for detection in boxes:
             self.detections.append(detection.detections.bbox)
+            self.detected_objects = True
 
 
 ################# POINT CLOUD CALLBACK FUNCTIONS###########################
