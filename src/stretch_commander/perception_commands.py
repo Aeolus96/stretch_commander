@@ -50,8 +50,8 @@ class StretchPerception:
         # print(data)#MODIFIED TO REFLECT THE CORRECT TOPICS
         # self.bbox_sub = rospy.Subscriber('/Camera
 
-        for detection in boxes:
-            self.detections.append(detection.detections.bbox)
+        for detection in boxes.detections:
+            self.detections.append(detection.bbox)
             self.detected_objects = True
 
 
