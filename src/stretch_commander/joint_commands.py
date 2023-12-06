@@ -119,6 +119,22 @@ class StretchManipulation:
         self.send_joint_goals(["joint_wrist_yaw"], [3.14])
         rospy.loginfo("-*- -*- -*-")
 
+    def look_for_shirts(self, pos):
+        if pos == 1:
+            rospy.loginfo("-*- -*- -*-")
+            rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Start Point")
+            self.send_joint_goals(["joint_head_pan"], [-2.75])
+            rospy.loginfo("-*- -*- -*-")
+        elif pos == 2:
+            rospy.loginfo("-*- -*- -*-")
+            rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Mid Point")
+            self.send_joint_goals(["joint_head_pan"], [0])
+            rospy.loginfo("-*- -*- -*-")
+        elif pos == 3:
+            rospy.loginfo("-*- -*- -*-")
+            rospy.loginfo(f"{self.__class__.__name__}: Moving camera - End Point")
+            self.send_joint_goals(["joint_head_pan"], [2.75])
+            rospy.loginfo("-*- -*- -*-")
 
 # End of class
 ########################################################################################################################
