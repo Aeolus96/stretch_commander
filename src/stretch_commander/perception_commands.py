@@ -51,7 +51,7 @@ class StretchPerception:
         # self.bbox_sub = rospy.Subscriber('/Camera
 
         for detection in boxes.detections:
-            self.detections.append(detection.bbox)
+            self.detections.append(detection)
             self.detected_objects = True
 
 
@@ -69,7 +69,7 @@ class StretchPerception:
             #print(detection)
 
             # access the bounding box points
-            bbox = detection
+            bbox = detection.bbox
 
             width = bbox.size_x
             height = bbox.size_y
