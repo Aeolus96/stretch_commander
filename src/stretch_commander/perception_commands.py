@@ -20,7 +20,8 @@ class StretchPerception:
         self.camera_image_topic = "/camera/depth/color/points"
         self.bbox_sub = rospy.Subscriber(self.bbox_topic, Detection2DArray, self.bounding_box_callback)
         self.image_sub = rospy.Subscriber(self.camera_image_topic, PointCloud2, self.point_cloud_callback)
-        #self.stretch_sub=rospy.Subscriber(self.RObotTopic?, type, self.stretch_location_callback)
+        #self.stretch_sub=rospy.Subscriber("/tf/map", tf, self.stretch_location_callback)
+
 
         # Publishers
         self.trigger_scan_topic = "/trigger_yolo/"
@@ -53,6 +54,7 @@ class StretchPerception:
         all_filtered_points = []
 
         for detection in self.detections:
+            print("detection: ",detection)
             # for testing:
             #print(detection)
 
@@ -97,6 +99,7 @@ class StretchPerception:
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
+                    print("Index: ",index)
                     # Get the XYZ points [meters]
                     (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
 
@@ -133,7 +136,7 @@ class StretchPerception:
                 transformed_points = [tf2_geometry_msgs.do_transform_point(point, transform) for point in D3_bbox_points]
                 # Z height sorting and filtering clusters into a single point
                 point_to_grab = self.filter_points(transformed_points)
-
+                print("Point to grab: ", point_to_grab)
                 all_filtered_points.append(point_to_grab)
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
