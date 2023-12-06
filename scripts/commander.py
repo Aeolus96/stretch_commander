@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import rospy
+import time
 from stretch_commander.joint_commands import StretchManipulation
 from stretch_commander.nav_commands import StretchNavigation
 from stretch_commander.perception_commands import StretchPerception
@@ -54,10 +55,13 @@ def state_machine(start_state: str):
 
             man.look_for_shirts(1)
             per.trigger_yolo()
+            time.sleep(5)
             man.look_for_shirts(2)
             per.trigger_yolo()
+            time.sleep(5)
             man.look_for_shirts(3)
             per.trigger_yolo()
+            time.sleep(5)
 
             if per.detected_objects:
                 rospy.loginfo(f"Detection complete. Closest Point: {0.0}, {0.0}, {0.0}")
@@ -103,14 +107,14 @@ def state_machine(start_state: str):
 #######################################################################################################################
 if __name__ == "__main__":
     rospy.init_node("stretch_commander")
-
+    
     # Initialize the modules:
     nav = StretchNavigation()
     man = StretchManipulation()
     per = StretchPerception()
 
     # Start state machine from desired state
-    state_machine("mapping")
+    state_machine("detecting")
 
 
 # End of script
