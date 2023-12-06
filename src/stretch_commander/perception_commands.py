@@ -158,7 +158,8 @@ class StretchPerception:
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
-
+                
+        print("all filtered points: ", all_filtered_points)
         # These are the points that will be published
         self.final_points = self.cluster_points(all_filtered_points)
         print(self.final_points)
@@ -194,9 +195,10 @@ class StretchPerception:
         return final_point
 
     def cluster_points(self, point_array):
+        
+        print("Array passed into cluster_points():", point_array)
         point_arr = point_array
         final_point=PointStamped()
-        reduce_dupes=set()
         
         final_point.header="map"
         final_point.point.x=0.0
@@ -211,7 +213,6 @@ class StretchPerception:
         for i in range(len(point_arr)):
             # point to compare:
             current_point = point_arr[i]
-            new_point_arr=[]
             # array will hold all points that are close to eachother:
             points_to_merge = []
             locations = []
