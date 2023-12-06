@@ -142,7 +142,8 @@ class StretchPerception:
         # These are the points that will be published
         self.final_points = self.cluster_points(all_filtered_points)
         print(self.final_points)
-        self.point_pub(self.final_points)
+        for point in self.final_points:
+            self.point_pub(point)
         
         
         
