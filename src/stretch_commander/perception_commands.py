@@ -195,6 +195,7 @@ class StretchPerception:
     def cluster_points(self, point_array):
         point_arr = point_array
         final_point=PointStamped()
+        reduce_dupes=set()
         
         final_point.header="map"
         final_point.point.x=0.0
@@ -209,7 +210,7 @@ class StretchPerception:
         for i in range(len(point_arr)):
             # point to compare:
             current_point = point_arr[i]
-
+            new_point_arr=[]
             # array will hold all points that are close to eachother:
             points_to_merge = []
             locations = []
@@ -224,8 +225,10 @@ class StretchPerception:
                 updated_point = self.find_average(current_point, points_to_merge)
                 for index in locations:
                     point_arr[index] = updated_point
-
-        final_point=self.find_average(point_arr[0],point_arr)
+                reduce_dupes=set(point_arr)
+                
+        new_point_arr=list(reduce_dupes)
+        final_point=self.find_average(new_point_arr[0],new_point_arr[1:])
         self.final_points = final_point
 
     def find_distance(self, point1, point2):
