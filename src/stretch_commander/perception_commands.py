@@ -102,7 +102,9 @@ class StretchPerception:
                     print("Index: ",index)
                     # Get the XYZ points [meters]
                     (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
-
+                    print("X point: ",X)
+                    print("Y point: ",Y)
+                    print("Z point: ",Z)
                     # create point stamped object to use when transformiing points:
                     D3_point = PointStamped()
 
