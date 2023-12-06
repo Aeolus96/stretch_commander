@@ -32,7 +32,7 @@ class StretchPerception:
         self.all_raw_bbox_points = []
         self.raw_bbox_points = []
         self.final_points = []
-        self.detections = []  # holds dections from /yolo/results
+        self.detections = []  # holds detections from /yolo/results
         self.bbox_time = rospy.Time()
 
 ################# BOUNDING BOX CALLBACK FUNCTIONS##########################
@@ -54,7 +54,7 @@ class StretchPerception:
         all_filtered_points = []
 
         for detection in self.detections:
-            print("detection: ",detection)
+            print("detection: ", detection)
             # for testing:
             #print(detection)
 
@@ -101,11 +101,16 @@ class StretchPerception:
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
                     print("Index: ",index)
                     # Get the XYZ points [meters]
-                    (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
-                    print("X point: ",X)
-                    print("Y point: ",Y)
-                    print("Z point: ",Z)
-                    # create point stamped object to use when transformiing points:
+                    try:
+                        (X, Y, Z, rgb) = struct.unpack_from("ffff", pc_data.data, offset=index)
+                    except struct.error:
+                        print("Error unpacking point at index: ", index)
+                        continue
+                    
+                    print("3D X point: ",X)
+                    print("3D Y point: ",Y)
+                    print("3D Z point: ",Z)
+                    # create point stamped object to use when transforming points:
                     D3_point = PointStamped()
 
                     # frame will eventually be 'usb_cam/image_raw'
@@ -147,8 +152,7 @@ class StretchPerception:
         # These are the points that will be published
         self.final_points = self.cluster_points(all_filtered_points)
         print(self.final_points)
-        for point in self.final_points:
-            self.point_pub(point)
+        self.point_pub(self.final_points, PointStamped)
         
         
         
@@ -180,11 +184,18 @@ class StretchPerception:
 
     def cluster_points(self, point_array):
         point_arr = point_array
-
+        final_point=PointStamped()
+        
+        final_point.header="map"
+        final_point.point.x=0.0
+        final_point.point.y=0.0
+        final_point.point.z=0.0
+        
         # THRESHOLD TO BE MODIFIED WITH ACTUAL DATA
         threshold = 5
 
         # go through all points, and combine any that are within the threshold of eachother:
+        
         for i in range(len(point_arr)):
             # point to compare:
             current_point = point_arr[i]
@@ -204,8 +215,8 @@ class StretchPerception:
                 for index in locations:
                     point_arr[index] = updated_point
 
-        # remove multiples:
-        self.final_points = point_arr
+        final_point=self.find_average(point_arr[0],point_arr)
+        self.final_points = final_point
 
     def find_distance(self, point1, point2):
         x1, y1, z1 = point1.point.x, point1.point.y, point1.point.z
