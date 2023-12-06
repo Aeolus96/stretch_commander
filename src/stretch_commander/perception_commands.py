@@ -136,9 +136,9 @@ class StretchPerception:
 
                     # Transfrom D3 points to map frame
                     # transformation info:
-                    curr_time = rospy.Time(0)
-                    tfBuffer = tf2_ros.Buffer()
-                    listener = tf2_ros.TransformListener(tfBuffer)
+            curr_time = rospy.Time(0)
+            tfBuffer = tf2_ros.Buffer()
+            listener = tf2_ros.TransformListener(tfBuffer)
             try:
                 # from frame will be 'usb_cam/image_raw'
                 transform = tfBuffer.lookup_transform_full(
@@ -225,8 +225,8 @@ class StretchPerception:
                 updated_point = self.find_average(current_point, points_to_merge)
                 for index in locations:
                     point_arr[index] = updated_point
-                reduce_dupes=set(point_arr)
-                
+        
+        reduce_dupes=set(point_arr)
         new_point_arr=list(reduce_dupes)
         final_point=self.find_average(new_point_arr[0],new_point_arr[0:])
         self.final_points = final_point
