@@ -120,6 +120,10 @@ class StretchManipulation:
         rospy.loginfo("-*- -*- -*-")
 
     def look_for_shirts(self, pos):
+        self.arm_fold()
+        self.wrist_up()
+        self.wrist_in()
+        self.arm_down()
         if pos == 1:
             rospy.loginfo("-*- -*- -*-")
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Start Point")
@@ -128,12 +132,12 @@ class StretchManipulation:
         elif pos == 2:
             rospy.loginfo("-*- -*- -*-")
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Mid Point")
-            self.send_joint_goals(["joint_head_pan"], [-2])
+            self.send_joint_goals(["joint_head_pan"], [-1.5])
             rospy.loginfo("-*- -*- -*-")
         elif pos == 3:
             rospy.loginfo("-*- -*- -*-")
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - End Point")
-            self.send_joint_goals(["joint_head_pan"], [2])
+            self.send_joint_goals(["joint_head_pan"], [1.5])
             rospy.loginfo("-*- -*- -*-")
 
 # End of class
