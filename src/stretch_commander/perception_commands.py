@@ -2,14 +2,12 @@ import rospy
 from std_msgs.msg import Bool
 import tf2_ros
 import tf2_geometry_msgs
-import sensor_msgs.point_cloud2 as pc2
 from geometry_msgs.msg import PointStamped
-from sensor_msgs.msg import PointCloud2, PointField
+from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Header
 from vision_msgs.msg import Detection2D, Detection2DArray, BoundingBox2D, BoundingBox2DArray
 import cv2
 import numpy as np
-import pdb
 import struct
 import ctypes
 import math
@@ -60,7 +58,6 @@ class StretchPerception:
     def point_cloud_callback(self, pc_data):
         # print("point cloud callback reached")
 
-        pc2=PointCloud2.read_points(pc_data, skip_nans=True)
         all_filtered_points = []
 
         for detection in self.detections:
@@ -112,13 +109,13 @@ class StretchPerception:
                     print("Index: ", index)
                     
                     # Get the XYZ points [meters]
-                    # try:
-                    #     (X, Y, Z) = struct.unpack_from("ffff", pc_data.data, offset=index)
+                    try:
+                        (X, Y, Z) = struct.unpack_from("ffff", pc_data.data, offset=index)
                         
                         
-                    # except struct.error:
-                    #     print("Error unpacking point at index: ", index)
-                    #     continue
+                    except struct.error:
+                        print("Error unpacking point at index: ", index)
+                        continue
 
                     print("3D X point: ", X)
                     print("3D Y point: ", Y)
