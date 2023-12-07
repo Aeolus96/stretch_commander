@@ -48,29 +48,20 @@ def state_machine(start_state: str):
             # Wait for key press to continue
             input("Press Enter to start detecting...")
 
-            # Perception:
-            # TODO: Look around again to detect the objects (Manipulation Camera Joints)
-            # TODO: Change Camera Joints to look around and Trigger Yolo node
-            # TODO: Get Bounding Boxes Array (Detection2D Array from YOLO node) -> Closest Point for Pickup
-
-            time.sleep(5)
-            man.look_for_shirts(1)
-            time.sleep(2)
-            per.trigger_yolo()
-            time.sleep(5)
-            man.look_for_shirts(2)
-            time.sleep(2)
-            per.trigger_yolo()
-            time.sleep(5)
-            man.look_for_shirts(3)
-            time.sleep(2)
-            per.trigger_yolo()
-            time.sleep(5)
-
+            for i in range(3): # Cycle through 3 camera positions
+                man.look_for_shirts(i+1)
+                time.sleep(3) # wait for movement to complete
+                per.trigger_yolo()
+                time.sleep(10) # wait for detection to complete
+                if per.detected_objects: # Prevents multiple Detection2DArray publishes
+                    break
+                
             if per.detected_objects:
-                rospy.loginfo(f"Detection complete. Closest Point: {0.0}, {0.0}, {0.0}")
+                rospy.loginfo(
+                    f"Detected Object. Closest Point: {nav.target_point.x}, {nav.target_point.y}, {nav.target_point.z}"
+                )
                 state = "collecting"
-                per.detected_objects = False
+                per.detected_objects = False  # Reset detection flag
             else:
                 rospy.loginfo("No objects detected")
                 state = "detecting"
@@ -78,10 +69,7 @@ def state_machine(start_state: str):
         elif state == "collecting":
             # Wait for key press to continue
             input("Press Enter to start picking up landry...")
-
-            # Manipulation:
-            # TODO: Closest Point -> FUNMAP (Navigate using MoveArm)
-            # TODO: Pickup Object (using Joint Commands)
+            rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, nav.target_point.z))
 
         elif state == "dropoff":
             # Laundry drop off point (map frame):
@@ -92,7 +80,7 @@ def state_machine(start_state: str):
             input("Press Enter to start drop off...")
 
             # Go to drop off point
-            nav.pick_up_at_xyz(fixed_dropoff_x, fixed_dropoff_y, fixed_dropoff_z)
+            rospy.loginfo(nav.pick_up_at_xyz(fixed_dropoff_x, fixed_dropoff_y, fixed_dropoff_z))
             man.gripper_open()
             man.arm_fold()
             man.wrist_up()
@@ -101,7 +89,8 @@ def state_machine(start_state: str):
             objects_collected += 1
 
             # Exit Condition:
-            if objects_collected >= 3:
+            if objects_collected >= 2:  # 2 objects available for demo purposes
+                rospy.loginfo("All objects collected! Exiting...")
                 return
 
             state = "detecting"
@@ -111,7 +100,7 @@ def state_machine(start_state: str):
 #######################################################################################################################
 if __name__ == "__main__":
     rospy.init_node("stretch_commander")
-    
+
     # Initialize the modules:
     nav = StretchNavigation()
     man = StretchManipulation()

@@ -25,6 +25,15 @@ class StretchNavigation:
         self.clicked_point_pub = rospy.Publisher("/clicked_point", PointStamped, queue_size=1)
         self.clicked_point_goal = PoseStamped()
 
+        # Subscriber for pickup point for MoveArm service
+        self.target_point_topic = "/target_point"
+        self.target_point_sub = rospy.Subscriber(self.target_point_topic, PointStamped, self.target_point_callback)
+        self.target_point = Point()
+
+    # Update the target point when received
+    def target_point_callback(self, msg: PointStamped):
+        self.target_point = msg.point
+
     # Re-locates the robot in the pre-loaded map
     def trigger_global_localization(self):
         rospy.loginfo("Re-locating the robot...")
@@ -98,10 +107,10 @@ class StretchNavigation:
                 self.pick_up_point.z = z
                 response = move_arm(self.pick_up_point)  # Try alternate service call method if it doesn't work
                 rospy.loginfo(f"Point {x}, {y}, {z} reached.")
-                return response.message
+                return f"Point {x}, {y}, {z} reached."
             except rospy.ServiceException as e:
                 rospy.logerr(f"Service call failed: {e}")
-                return None
+                return f"Failed to reach point {x}, {y}, {z}"
 
         else:  # FunMap clicked_point topic: Alternative
             rospy.loginfo(f"Sending the pickup point {x}, {y}, {z} to FunMap clicked_point topic...")
@@ -113,7 +122,7 @@ class StretchNavigation:
             self.clicked_point_goal.pose.position.z = z + z_offset
             self.clicked_point_pub.publish(self.clicked_point_goal)
             rospy.loginfo(f"Point {x}, {y}, {z} reached.")
-            return
+            return f"Point {x}, {y}, {z} sent."
 
 
 # End of class

@@ -10,10 +10,6 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 ########################################################################################################################
 class StretchManipulation:
     def __init__(self):
-        self.target_point_topic = "/target_point"
-        self.target_point_sub = rospy.Subscriber(self.target_point_topic, PointStamped, self.target_point_callback)
-        self.target_point = Point()
-
         # Setup the trajectory client for manipulation of joints
         self.trajectory_client = actionlib.SimpleActionClient(
             "/stretch_controller/follow_joint_trajectory", FollowJointTrajectoryAction
@@ -25,10 +21,6 @@ class StretchManipulation:
         rospy.loginfo(f"<CHECK> {self.__class__.__name__}: Made contact with trajectory server")
         self.trajectory_goal = FollowJointTrajectoryGoal()
         self.point0 = JointTrajectoryPoint()
-
-    # Update the target point when received
-    def target_point_callback(self, msg: PointStamped):
-        self.target_point = msg.point
 
     # Home the robot for the first time after boot. Not necessary after that.
     def trigger_home_the_robot(self):
@@ -56,7 +48,7 @@ class StretchManipulation:
 
         goal_info = ", ".join(f"{joint}: {value}" for joint, value in zip(joint_names, goal_values))
         rospy.loginfo(f"Sent joint goals: {goal_info}")
-        rospy.loginfo(f"Trajectory goal message = {self.trajectory_goal}")
+        # rospy.loginfo(f"Trajectory goal message = {self.trajectory_goal}")  # DEBUG
         self.trajectory_client.wait_for_result()
 
     def gripper_close(self):
@@ -139,6 +131,7 @@ class StretchManipulation:
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - End Point")
             self.send_joint_goals(["joint_head_pan"], [1.5])
             rospy.loginfo("-*- -*- -*-")
+
 
 # End of class
 ########################################################################################################################
