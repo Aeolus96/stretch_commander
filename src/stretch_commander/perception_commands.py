@@ -33,7 +33,7 @@ class StretchPerception:
         self.raw_bbox_points = []
         self.final_points = []
         self.detections = []  # holds detections from /yolo/results
-        self.bbox_time = rospy.Time()
+        #self.bbox_time = rospy.Time()
 
         self.detected_objects = False
 
@@ -107,23 +107,19 @@ class StretchPerception:
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
-                    print("Index: ", index)
+                    #print("Index: ", index)
 
                     # Get the XYZ points [meters]
                     
                     (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
 
                     
-
-                    print("3D X point: ", X)
-                    print("3D Y point: ", Y)
-                    print("3D Z point: ", Z)
                     # create point stamped object to use when transforming points:
                     D3_point = PointStamped()
 
                     # frame will eventually be 'usb_cam/image_raw'
                     D3_point.header.frame_id = "camera_color_optical_frame"
-                    D3_point.header.stamp = bbox_time
+                    D3_point.header.stamp = detection.header.stamp
 
                     D3_point.point.x = X
                     D3_point.point.y = Y
@@ -134,7 +130,7 @@ class StretchPerception:
 
             # Transfrom D3 points to map frame
             # transformation info:
-            curr_time = rospy.Time(0)
+            curr_time = rospy.Time()
             tfBuffer = tf2_ros.Buffer()
             listener = tf2_ros.TransformListener(tfBuffer)
             try:
