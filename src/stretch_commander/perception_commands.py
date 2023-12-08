@@ -110,12 +110,10 @@ class StretchPerception:
                     print("Index: ", index)
 
                     # Get the XYZ points [meters]
-                    try:
-                        (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
+                    
+                    (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
 
-                    except struct.error:
-                        print("Error unpacking point at index: ", index)
-                        continue
+                    
 
                     print("3D X point: ", X)
                     print("3D Y point: ", Y)
