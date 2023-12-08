@@ -58,8 +58,7 @@ class StretchPerception:
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
         print("point cloud callback reached")
-
-        print("All detections: ", self.detections)
+        
         for detection in self.detections:
             print("detection: ", detection)
             # for testing:
