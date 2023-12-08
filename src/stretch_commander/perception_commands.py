@@ -31,9 +31,10 @@ class StretchPerception:
         # Initialize variables and buffers:
         self.all_raw_bbox_points = []
         self.raw_bbox_points = []
-        self.final_points = []
+        self.final_point = PointStamped()
         self.detections = []  # holds detections from /yolo/results
-        #self.bbox_time = rospy.Time()
+
+        # self.bbox_time = rospy.Time()
 
         self.detected_objects = False
 
@@ -45,7 +46,7 @@ class StretchPerception:
     ################# BOUNDING BOX CALLBACK FUNCTIONS##########################
 
     def bounding_box_callback(self, boxes):
-        print("bounding box callback reached")#MODIFIED TO REFLECT THE CORRECT TOPICS
+        print("bounding box callback reached")  # MODIFIED TO REFLECT THE CORRECT TOPICS
         # self.bbox_sub = rospy.Subscriber('/Camera
         rospy.loginfo("bounding box callback reached")
         for detection in boxes.detections:
@@ -57,8 +58,6 @@ class StretchPerception:
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
         print("point cloud callback reached")
-
-        all_filtered_points = []
 
         print("All detections: ", self.detections)
         for detection in self.detections:
@@ -88,8 +87,6 @@ class StretchPerception:
             # self.all_raw_bbox_points.append(raw_bbox_points)
 
             # for raw_bbox in self.all_raw_bbox_points
-
-            point_to_grab = PointStamped()
             D3_bbox_points = []
 
             # (global) raw_bbox_points =[xmin, ymin, xmax,  ymax]
@@ -107,13 +104,12 @@ class StretchPerception:
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
-                    #print("Index: ", index)
+                    # print("Index: ", index)
 
                     # Get the XYZ points [meters]
-                    
+
                     (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
 
-                    
                     # create point stamped object to use when transforming points:
                     D3_point = PointStamped()
 
@@ -130,14 +126,14 @@ class StretchPerception:
 
             # Transfrom D3 points to map frame
             # transformation info:
-            curr_time = rospy.Time()
+
             tfBuffer = tf2_ros.Buffer()
             listener = tf2_ros.TransformListener(tfBuffer)
             try:
                 # from frame will be 'usb_cam/image_raw'
                 transform = tfBuffer.lookup_transform_full(
                     target_frame="map",
-                    target_time=curr_time,
+                    target_time=rospy.Time(),
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
                     fixed_frame="base_link",
@@ -148,20 +144,16 @@ class StretchPerception:
                     tf2_geometry_msgs.do_transform_point(point, transform) for point in D3_bbox_points
                 ]
                 # Z height sorting and filtering clusters into a single point
-                point_to_grab = self.filter_points(transformed_points)
-                print("Point to grab: ", point_to_grab)
-                all_filtered_points.append(point_to_grab)
+                print(transformed_points)
+                if self.filter_points(transformed_points):
+                    # These are the points that will be published
+                    self.final_point = self.cluster_points(self.final_point)
+                    print(self.final_point)
+                    self.point_pub(self.final_point, PointStamped)
+                    self.final_point = PointStamped()
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
-
-        if all_filtered_points:
-            print("all filtered points: ", all_filtered_points)
-            # These are the points that will be published
-            self.final_points = self.cluster_points(all_filtered_points)
-            print(self.final_points)
-            self.point_pub(self.final_points, PointStamped)
-            self.final_points = []
 
     def filter_points(self, points):
         # filters all D3 points within one bounding box, and returns the highest point
@@ -187,7 +179,13 @@ class StretchPerception:
                 if point.point.z > final_point.point.z:
                     final_point = point
 
-        return final_point
+        if not (final_point.point.z == 0.0 and final_point.x == 0.0 and final_point.y == 0.0):
+            self.final_point = final_point
+            print("Point within threshold detected: ", final_point)
+            return True
+        else:
+            print("Did not find a point within the threshold")
+            return False
 
     def cluster_points(self, point_array):
         print("Array passed into cluster_points():", point_array)
@@ -226,7 +224,7 @@ class StretchPerception:
         print("point_arr: ", point_arr)
 
         final_point = self.find_average(point_arr[0], point_arr)
-        self.final_points = final_point
+        self.final_point = final_point
 
     def find_distance(self, point1, point2):
         x1, y1, z1 = point1.point.x, point1.point.y, point1.point.z
