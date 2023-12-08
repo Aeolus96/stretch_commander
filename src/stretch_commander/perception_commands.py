@@ -49,6 +49,7 @@ class StretchPerception:
         # self.bbox_sub = rospy.Subscriber('/Camera
         rospy.loginfo("bounding box callback reached")
         for detection in boxes.detections:
+            print("New detection processed in bbox callback: ", detection)
             self.detections.append(detection)
             self.detected_objects = True
 
@@ -60,6 +61,7 @@ class StretchPerception:
 
         all_filtered_points = []
 
+        print("All detections: ", self.detections)
         for detection in self.detections:
             print("detection: ", detection)
             # for testing:
