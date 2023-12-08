@@ -132,7 +132,7 @@ class StretchPerception:
                 # from frame will be 'usb_cam/image_raw'
                 transform = tfBuffer.lookup_transform_full(
                     target_frame="map",
-                    target_time=rospy.Time(),
+                    target_time=bbox_time,
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
                     fixed_frame="base_link",
