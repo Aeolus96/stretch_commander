@@ -4,6 +4,7 @@ import time
 from stretch_commander.joint_commands import StretchManipulation
 from stretch_commander.nav_commands import StretchNavigation
 from stretch_commander.perception_commands import StretchPerception
+from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Detection2DArray
 
 # Commands to start everything on the robot (using ssh on robot):
 """
@@ -95,11 +96,15 @@ def state_machine(start_state: str):
 
             state = "detecting"
 
+def bbox_callback(data):
+    rospy.loginfo("Received bbox callback")
 
 # Start of script:
 #######################################################################################################################
 if __name__ == "__main__":
     rospy.init_node("stretch_commander")
+    
+    bbox_sub = rospy.Subscriber("/yolo/results", Detection2DArray, bbox_callback)
 
     # Initialize the modules:
     nav = StretchNavigation()
