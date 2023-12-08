@@ -17,7 +17,7 @@ class StretchPerception:
     def __init__(self):
         # Subscribers
         self.bbox_topic = "/yolo/results"
-        self.camera_image_topic = "/camera/depth/color/points"
+        self.camera_image_topic = "/camera_throttled/depth/color/points"
         self.bbox_sub = rospy.Subscriber(self.bbox_topic, Detection2DArray, self.bounding_box_callback)
         self.image_sub = rospy.Subscriber(self.camera_image_topic, PointCloud2, self.point_cloud_callback)
         # self.stretch_sub=rospy.Subscriber("/tf/map", tf, self.stretch_location_callback)
@@ -101,18 +101,17 @@ class StretchPerception:
             # bbox pixels to D3 points
 
             # xyz_image=np.zeros((yMax-yMin,xMax-xMin,3),np.float32)
-            row=0
-            col=0
+            row = 0
+            col = 0
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
                     print("Index: ", index)
-                    
+
                     # Get the XYZ points [meters]
                     try:
                         (X, Y, Z) = struct.unpack_from("ffff", pc_data.data, offset=index)
-                        
-                        
+
                     except struct.error:
                         print("Error unpacking point at index: ", index)
                         continue
