@@ -45,7 +45,7 @@ class StretchPerception:
     ################# BOUNDING BOX CALLBACK FUNCTIONS##########################
 
     def bounding_box_callback(self, boxes):
-        # print(data)#MODIFIED TO REFLECT THE CORRECT TOPICS
+        print("bounding box callback reached")#MODIFIED TO REFLECT THE CORRECT TOPICS
         # self.bbox_sub = rospy.Subscriber('/Camera
 
         for detection in boxes.detections:
@@ -56,7 +56,7 @@ class StretchPerception:
 
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
-        # print("point cloud callback reached")
+        print("point cloud callback reached")
 
         all_filtered_points = []
 
