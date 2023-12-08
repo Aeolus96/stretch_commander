@@ -1,16 +1,16 @@
-import rospy
-from std_msgs.msg import Bool
-import tf2_ros
-import tf2_geometry_msgs
-from geometry_msgs.msg import PointStamped
-from sensor_msgs.msg import PointCloud2
-from std_msgs.msg import Header
-from vision_msgs.msg import Detection2D, Detection2DArray, BoundingBox2D, BoundingBox2DArray
-import cv2
-import numpy as np
-import struct
 import ctypes
 import math
+import struct
+
+import cv2
+import numpy as np
+import rospy
+import tf2_geometry_msgs
+import tf2_ros
+from geometry_msgs.msg import PointStamped
+from sensor_msgs.msg import PointCloud2
+from std_msgs.msg import Bool, Header
+from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Detection2DArray
 
 
 class StretchPerception:
@@ -47,7 +47,7 @@ class StretchPerception:
     def bounding_box_callback(self, boxes):
         print("bounding box callback reached")#MODIFIED TO REFLECT THE CORRECT TOPICS
         # self.bbox_sub = rospy.Subscriber('/Camera
-
+        rospy.loginfo("bounding box callback reached")
         for detection in boxes.detections:
             self.detections.append(detection)
             self.detected_objects = True
