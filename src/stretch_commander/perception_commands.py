@@ -136,7 +136,7 @@ class StretchPerception:
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
                     fixed_frame="base_link",
-                    timeout=rospy.Duration(1.0),
+                    timeout=rospy.Duration(10),
                 )
 
                 transformed_points = [
