@@ -37,7 +37,7 @@ class StretchPerception:
         # self.bbox_time = rospy.Time()
 
         self.detected_objects = False
-        
+
         self.tfBuffer = tf2_ros.Buffer()
         self.listener = tf2_ros.TransformListener(self.tfBuffer)
 
@@ -60,7 +60,6 @@ class StretchPerception:
 
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
-        
         for detection in self.detections:
             print("detection: ", detection)
             # for testing:
@@ -128,38 +127,36 @@ class StretchPerception:
             # Transfrom D3 points to map frame
             # transformation info:
 
-            
-            
             try:
-                #tfBuffer.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
+                # tfBuffer.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
                 transform = self.tfBuffer.lookup_transform_full(
                     target_frame="map",
-                    target_time = bbox_time,
+                    target_time=bbox_time,
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
                     fixed_frame="base_link",
-                    timeout=rospy.Duration(10)
-        )
-                #transform = tfBuffer.lookup_transform("base_link", "camera_color_optical_frame", rospy.Time())
+                    timeout=rospy.Duration(10),
+                )
+                # transform = tfBuffer.lookup_transform("base_link", "camera_color_optical_frame", rospy.Time())
 
                 transformed_points = [
                     tf2_geometry_msgs.do_transform_point(point, transform) for point in D3_bbox_points
                 ]
                 # Z height sorting and filtering clusters into a single point
-                print(transformed_points)
                 if self.filter_points(transformed_points):
                     # These are the points that will be published
                     self.final_point = self.cluster_points(self.final_point)
                     print(self.final_point)
                     self.point_pub(self.final_point, PointStamped)
-                   
+
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
 
         self.final_point = PointStamped()
         self.detections = []
-        
+
     def filter_points(self, points):
+        print("filtering points")
         # filters all D3 points within one bounding box, and returns the highest point
 
         # assuming floor height is 0.0 Confirm with team.
