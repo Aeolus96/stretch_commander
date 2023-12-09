@@ -49,14 +49,14 @@ def state_machine(start_state: str):
             # Wait for key press to continue
             input("Press Enter to start detecting...")
 
-            for i in range(3): # Cycle through 3 camera positions
-                man.look_for_shirts(i+1)
-                time.sleep(3) # wait for movement to complete
+            for i in range(3):  # Cycle through 3 camera positions
+                man.look_for_shirts(i + 1)
+                time.sleep(3)  # wait for movement to complete
                 per.trigger_yolo()
-                time.sleep(10) # wait for detection to complete
-                if per.detected_objects: # Prevents multiple Detection2DArray publishes
+                time.sleep(10)  # wait for detection to complete
+                if per.detected_objects:  # Prevents multiple Detection2DArray publishes
                     break
-                
+
             if per.detected_objects:
                 rospy.loginfo(
                     f"Detected Object. Closest Point: {nav.target_point.x}, {nav.target_point.y}, {nav.target_point.z}"
@@ -70,7 +70,14 @@ def state_machine(start_state: str):
         elif state == "collecting":
             # Wait for key press to continue
             input("Press Enter to start picking up landry...")
-            rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, nav.target_point.z))
+            rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, 0.7))
+            man.gripper_open()
+            man.wrist_down()
+            man.arm_down()
+            man.gripper_close()
+            time.sleep(5)
+            man.arm_up()
+            man.arm_fold()
             state = "dropoff"
 
         elif state == "dropoff":
@@ -97,14 +104,16 @@ def state_machine(start_state: str):
 
             state = "detecting"
 
+
 def bbox_callback(data):
     rospy.loginfo("Received bbox callback")
+
 
 # Start of script:
 #######################################################################################################################
 if __name__ == "__main__":
     rospy.init_node("stretch_commander")
-    
+
     bbox_sub = rospy.Subscriber("/yolo/results", Detection2DArray, bbox_callback)
 
     # Initialize the modules:
