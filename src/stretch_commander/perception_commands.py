@@ -129,9 +129,9 @@ class StretchPerception:
             listener = tf2_ros.TransformListener(tfBuffer)
             #listener.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
             try:
-                listener.waitForTransformFull("camera_color_optical_frame", bbox_time, "base_link", bbox_time, "map", rospy.Duration(10.0))
+                listener.wait_for_transform_full("camera_color_optical_frame", bbox_time, "base_link", bbox_time, "map", rospy.Duration(10.0))
                 #from frame will be 'usb_cam/image_raw'
-                transform = listener.lookupTransformFull(
+                transform = listener.lookup_transform_full(
                     target_frame="map",
                     target_time=rospy.Time(0),
                     source_frame="camera_color_optical_frame",
