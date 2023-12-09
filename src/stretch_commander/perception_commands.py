@@ -57,7 +57,6 @@ class StretchPerception:
 
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
-        print("point cloud callback reached")
         
         for detection in self.detections:
             print("detection: ", detection)
@@ -128,16 +127,17 @@ class StretchPerception:
 
             tfBuffer = tf2_ros.Buffer()
             listener = tf2_ros.TransformListener(tfBuffer)
+            listener.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
             try:
-                # from frame will be 'usb_cam/image_raw'
-                # #transform = tfBuffer.lookup_transform_full(
-                #     target_frame="map",
-                #     target_time=rospy.Time(0),
-                #     source_frame="camera_color_optical_frame",
-                #     source_time=bbox_time,
-                #     fixed_frame="base_link",
-                #     timeout=rospy.Duration(10),
-                # )
+                #from frame will be 'usb_cam/image_raw'
+                transform = tfBuffer.lookup_transform_full(
+                    target_frame="map",
+                    target_time=rospy.Time(0),
+                    source_frame="camera_color_optical_frame",
+                    source_time=bbox_time,
+                    fixed_frame="base_link",
+                    timeout=rospy.Duration(10)
+        )
                 transform = tfBuffer.lookup_transform("base_link", "camera_color_optical_frame", rospy.Time())
 
                 transformed_points = [
