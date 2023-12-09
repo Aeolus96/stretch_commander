@@ -147,7 +147,7 @@ class StretchPerception:
                     # These are the points that will be published
                     
                     print(self.final_point)
-                    self.point_pub(self.final_point, PointStamped)
+                    self.point_pub.publish(self.final_point)
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
