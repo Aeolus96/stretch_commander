@@ -145,7 +145,7 @@ class StretchPerception:
                 # Z height sorting and filtering clusters into a single point
                 if self.filter_points(transformed_points):
                     # These are the points that will be published
-                    self.final_point = self.cluster_points(self.final_point)
+                    
                     print(self.final_point)
                     self.point_pub(self.final_point, PointStamped)
 
