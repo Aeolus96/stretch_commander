@@ -129,7 +129,7 @@ class StretchPerception:
             listener = tf2_ros.TransformListener(tfBuffer)
             
             try:
-                tfBuffer.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
+                #tfBuffer.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
                 transform = tfBuffer.lookupTransform(
                     target_frame="map",
                     target_time = bbox_time,
