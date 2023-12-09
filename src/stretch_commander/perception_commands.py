@@ -138,7 +138,7 @@ class StretchPerception:
                 #     fixed_frame="base_link",
                 #     timeout=rospy.Duration(10),
                 # )
-                transform = tfBuffer.lookup_transform("camera_color_optical_frame", "map", rospy.Time())
+                transform = tfBuffer.lookup_transform("map", "camera_color_optical_frame", rospy.Time())
 
                 transformed_points = [
                     tf2_geometry_msgs.do_transform_point(point, transform) for point in D3_bbox_points
