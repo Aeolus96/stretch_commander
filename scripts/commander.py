@@ -71,6 +71,7 @@ def state_machine(start_state: str):
             # Wait for key press to continue
             input("Press Enter to start picking up landry...")
             rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, nav.target_point.z))
+            state = "dropoff"
 
         elif state == "dropoff":
             # Laundry drop off point (map frame):
@@ -112,7 +113,7 @@ if __name__ == "__main__":
     per = StretchPerception()
 
     # Start state machine from desired state
-    state_machine("detecting")
+    state_machine("mapping")
 
 
 # End of script
