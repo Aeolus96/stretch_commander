@@ -130,14 +130,15 @@ class StretchPerception:
             listener = tf2_ros.TransformListener(tfBuffer)
             try:
                 # from frame will be 'usb_cam/image_raw'
-                transform = tfBuffer.lookup_transform_full(
-                    target_frame="map",
-                    target_time=rospy.Time(0),
-                    source_frame="camera_color_optical_frame",
-                    source_time=bbox_time,
-                    fixed_frame="base_link",
-                    timeout=rospy.Duration(10),
-                )
+                # #transform = tfBuffer.lookup_transform_full(
+                #     target_frame="map",
+                #     target_time=rospy.Time(0),
+                #     source_frame="camera_color_optical_frame",
+                #     source_time=bbox_time,
+                #     fixed_frame="base_link",
+                #     timeout=rospy.Duration(10),
+                # )
+                transform = tfBuffer("camera_color_optical_frame", "map", rospy.Time())
 
                 transformed_points = [
                     tf2_geometry_msgs.do_transform_point(point, transform) for point in D3_bbox_points
