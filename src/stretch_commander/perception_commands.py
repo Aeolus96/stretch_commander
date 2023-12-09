@@ -37,6 +37,9 @@ class StretchPerception:
         # self.bbox_time = rospy.Time()
 
         self.detected_objects = False
+        
+        self.tfBuffer = tf2_ros.Buffer()
+        self.listener = tf2_ros.TransformListener(self.tfBuffer)
 
     def trigger_yolo(self):
         msg = Bool()
@@ -125,12 +128,11 @@ class StretchPerception:
             # Transfrom D3 points to map frame
             # transformation info:
 
-            tfBuffer = tf2_ros.Buffer()
-            listener = tf2_ros.TransformListener(tfBuffer)
+            
             
             try:
                 #tfBuffer.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
-                transform = tfBuffer.lookup_transform_full(
+                transform = self.tfBuffer.lookup_transform_full(
                     target_frame="map",
                     target_time = bbox_time,
                     source_frame="camera_color_optical_frame",
