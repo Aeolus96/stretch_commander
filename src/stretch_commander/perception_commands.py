@@ -150,11 +150,13 @@ class StretchPerception:
                     self.final_point = self.cluster_points(self.final_point)
                     print(self.final_point)
                     self.point_pub(self.final_point, PointStamped)
-                    self.final_point = PointStamped()
-
+                   
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
 
+        self.final_point = PointStamped()
+        self.detections = []
+        
     def filter_points(self, points):
         # filters all D3 points within one bounding box, and returns the highest point
 
