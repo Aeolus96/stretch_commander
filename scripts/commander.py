@@ -9,6 +9,8 @@ from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Dete
 # Commands to start everything on the robot (using ssh on robot):
 """
 roslaunch stretch_funmap mapping.launch rviz:=false
+roslaunch synchronized_throttle synchronize_stretch.launch
+roslaunch synchronized_throttle generate_pcloud.launch
 """
 # Use the custom RViz config (lightweight and fast):
 """
