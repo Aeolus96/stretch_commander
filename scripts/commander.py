@@ -118,8 +118,8 @@ if __name__ == "__main__":
     per = StretchPerception()
 
     try:
-        # Start state machine from desired state
-        state_machine("mapping")
+        # Start state machine from desired state, mapping | detecting | collecting | dropoff
+        state_machine("detecting")  # starting with detecting for testing purposes
     except rospy.ROSInterruptException:
         pass
 
