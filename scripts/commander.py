@@ -107,25 +107,21 @@ def state_machine(start_state: str):
             state = "detecting"
 
 
-def bbox_callback(data):
-    rospy.loginfo("Received bbox callback")
-
-
 # Start of script:
 #######################################################################################################################
 if __name__ == "__main__":
     rospy.init_node("stretch_commander")
-
-    bbox_sub = rospy.Subscriber("/yolo/results", Detection2DArray, bbox_callback)
 
     # Initialize the modules:
     nav = StretchNavigation()
     man = StretchManipulation()
     per = StretchPerception()
 
-    # Start state machine from desired state
-    state_machine("mapping")
-
+    try:
+        # Start state machine from desired state
+        state_machine("mapping")
+    except rospy.ROSInterruptException:
+        pass
 
 # End of script
 #######################################################################################################################

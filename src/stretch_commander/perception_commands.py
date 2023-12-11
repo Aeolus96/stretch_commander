@@ -134,7 +134,7 @@ class StretchPerception:
                     target_time=bbox_time,
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
-                    fixed_frame="base_link",
+                    fixed_frame="base_link", # VERIFY THIS IF THIS IS CORRECT
                     timeout=rospy.Duration(10),
                 )
                 # transform = tfBuffer.lookup_transform("base_link", "camera_color_optical_frame", rospy.Time())

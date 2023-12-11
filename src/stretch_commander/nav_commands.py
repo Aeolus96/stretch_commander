@@ -105,7 +105,7 @@ class StretchNavigation:
                 self.pick_up_point.x = x
                 self.pick_up_point.y = y
                 self.pick_up_point.z = z
-                response = move_arm(self.pick_up_point)  # Try alternate service call method if it doesn't work
+                response = move_arm(self.pick_up_point)
                 rospy.loginfo(f"Point {x}, {y}, {z} reached.")
                 return f"Point {x}, {y}, {z} reached."
             except rospy.ServiceException as e:
