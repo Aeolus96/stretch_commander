@@ -9,6 +9,8 @@ from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Dete
 # Commands to start everything on the robot (using ssh on robot):
 """
 roslaunch stretch_funmap mapping.launch rviz:=false
+roslaunch synchronized_throttle synchronize_stretch.launch
+roslaunch synchronized_throttle generate_pcloud.launch
 """
 # Use the custom RViz config (lightweight and fast):
 """
@@ -105,25 +107,21 @@ def state_machine(start_state: str):
             state = "detecting"
 
 
-def bbox_callback(data):
-    rospy.loginfo("Received bbox callback")
-
-
 # Start of script:
 #######################################################################################################################
 if __name__ == "__main__":
     rospy.init_node("stretch_commander")
-
-    bbox_sub = rospy.Subscriber("/yolo/results", Detection2DArray, bbox_callback)
 
     # Initialize the modules:
     nav = StretchNavigation()
     man = StretchManipulation()
     per = StretchPerception()
 
-    # Start state machine from desired state
-    state_machine("mapping")
-
+    try:
+        # Start state machine from desired state, mapping | detecting | collecting | dropoff
+        state_machine("detecting")  # starting with detecting for testing purposes
+    except rospy.ROSInterruptException:
+        pass
 
 # End of script
 #######################################################################################################################
