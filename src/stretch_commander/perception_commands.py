@@ -54,7 +54,6 @@ class StretchPerception:
         rospy.loginfo("bounding box callback reached")
         for detection in boxes.detections:
             self.detections.append(detection)
-            self.detected_objects = True
 
     ################# POINT CLOUD CALLBACK FUNCTIONS###########################
 
@@ -145,6 +144,7 @@ class StretchPerception:
                 # Z height sorting and filtering clusters into a single point
                 if self.filter_points(transformed_points):
                     # These are the points that will be published
+                    self.detected_objects = True
                     
                     print(self.final_point)
                     self.point_pub.publish(self.final_point)
@@ -164,7 +164,7 @@ class StretchPerception:
         floor_height = 0.0
 
         # making max tshirt height 5 inches off ground. Confirm with team
-        max_tshirt_height = 0.127
+        max_tshirt_height = 0.5
 
         # will return the highest point in the filtered array
         final_point = PointStamped()
@@ -186,6 +186,7 @@ class StretchPerception:
             return True
         else:
             print("Did not find a point within the threshold")
+            self.detected_objects = False
             return False
 
     def cluster_points(self, point_array):
