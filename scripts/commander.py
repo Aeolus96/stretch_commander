@@ -65,6 +65,7 @@ def state_machine(start_state: str):
                     f"Detected Object. Closest Point: {nav.target_point.x}, {nav.target_point.y}, {nav.target_point.z}"
                 )
                 state = "collecting"
+                man.arm_up()
                 per.detected_objects = False  # Reset detection flag
             else:
                 rospy.loginfo("No objects detected")
