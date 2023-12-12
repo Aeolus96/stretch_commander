@@ -28,7 +28,7 @@ class StretchPerception:
         self.target_point_topic = "/target_point"
         self.point_pub = rospy.Publisher(self.target_point_topic, PointStamped, queue_size=5)
         self.trigger_yolo_pub = rospy.Publisher(self.trigger_scan_topic, Bool, queue_size=5)
-        self.marker_pub = rospy.Publisher("/target_point/marker", Marker, queue_size=5)
+        self.marker_pub = rospy.Publisher("/target_marker", Marker, queue_size=5)
         # bounding box testing:
         self.test_pub = rospy.Publisher(self.bbox_topic, Detection2DArray, queue_size=5)
 
@@ -301,6 +301,23 @@ class StretchPerception:
 
         return avg_point
 
+def publish_test_box(self):
+    # create a bounding box for testing:
+        detection_array_msg = Detection2DArray()
+        detection_array_msg.header = "camera_color_optical_frame"
 
-# sdef publish_test_box():
-# create a bounding box for testing:
+        x1 = 10
+        y1 = 10
+        x2 = 20
+        y2 = 20
+
+        detection_msg = Detection2D()
+        detection_msg.header = "camera_color_optical_frame"
+
+        detection_msg.bbox.size_x = x2 - x1
+        detection_msg.bbox.size_y = y2 - y1
+
+        detection_msg.bbox.center.x = x1 + detection_msg.bbox.size_x / 2
+        detection_msg.bbox.center.y = y1 + detection_msg.bbox.size_y / 2
+
+        self.test_pub.publish(detection_array_msg)
