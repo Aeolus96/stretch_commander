@@ -49,6 +49,7 @@ def state_machine(start_state: str):
 
         elif state == "detecting":
             # Wait for key press to continue
+            
             input("Press Enter to start detecting...")
 
             for i in range(3):  # Cycle through 3 camera positions
@@ -70,16 +71,20 @@ def state_machine(start_state: str):
                 state = "detecting"
 
         elif state == "collecting":
+            # Get ready to pick up:
+            man.arm_up()
+            man.gripper_open()
+            man.wrist_down()
+            time.sleep(1)
             # Wait for key press to continue
             input("Press Enter to start picking up landry...")
             rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, 0.7))
-            man.gripper_open()
-            man.wrist_down()
             man.arm_down()
-            man.gripper_close()
             time.sleep(5)
+            man.gripper_close()
+            time.sleep(1)
             man.arm_up()
-            man.arm_fold()
+            # man.arm_fold() # Not needed for demo purposes, might obstruct the lidar
             state = "dropoff"
 
         elif state == "dropoff":

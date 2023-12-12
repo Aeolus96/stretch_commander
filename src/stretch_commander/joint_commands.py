@@ -51,84 +51,74 @@ class StretchManipulation:
         self.trajectory_client.wait_for_result()
 
     def gripper_close(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Closing the gripper")
         self.send_joint_goals(["joint_gripper_finger_left"], [-0.25])
         rospy.loginfo("-*- -*- -*-")
 
     def gripper_open(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Opening the gripper")
         self.send_joint_goals(["joint_gripper_finger_left"], [1.65])
         rospy.loginfo("-*- -*- -*-")
 
     def arm_extend(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Extending the arm")
         self.send_joint_goals(["wrist_extension"], [0.40])
         rospy.loginfo("-*- -*- -*-")
 
     def arm_fold(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Folding the arm")
-        self.send_joint_goals(["wrist_extension"], [0.10])
+        self.send_joint_goals(["wrist_extension"], [0.0])  # 0.10 to avoid collision with the lift axis
         rospy.loginfo("-*- -*- -*-")
 
     def arm_up(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Lifting the arm up")
         self.send_joint_goals(["joint_lift"], [1.00])
         rospy.loginfo("-*- -*- -*-")
 
     def arm_down(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Dropping the arm down")
         self.send_joint_goals(["joint_lift"], [0.15])
         rospy.loginfo("-*- -*- -*-")
 
     def wrist_down(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist down")
         self.send_joint_goals(["joint_wrist_pitch"], [-1.5])
         rospy.loginfo("-*- -*- -*-")
 
     def wrist_up(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist up")
         self.send_joint_goals(["joint_wrist_pitch"], [0.0])
         rospy.loginfo("-*- -*- -*-")
 
     def wrist_out(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist out")
         self.send_joint_goals(["joint_wrist_yaw"], [-0.25])
         rospy.loginfo("-*- -*- -*-")
 
     def wrist_in(self):
-        rospy.loginfo("-*- -*- -*-")
         rospy.loginfo(f"{self.__class__.__name__}: Moving the wrist in")
-        self.send_joint_goals(["joint_wrist_yaw"], [3.14])
+        self.send_joint_goals(["joint_wrist_yaw"], [4.00])  # 3.14 is pointing towards the lift axis
         rospy.loginfo("-*- -*- -*-")
 
     def look_for_shirts(self, pos):
+        rospy.loginfo(f"{self.__class__.__name__}: Tilting camera - Start Point")
+        self.send_joint_goals(["joint_head_tilt"], [-0.79])
+        rospy.loginfo("-*- -*- -*-")
         self.arm_fold()
         self.wrist_up()
         self.wrist_in()
         self.arm_down()
         if pos == 1:
-            rospy.loginfo("-*- -*- -*-")
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Start Point")
-            self.send_joint_goals(["joint_head_pan"], [-0])
+            self.send_joint_goals(["joint_head_pan"], [0])
             rospy.loginfo("-*- -*- -*-")
         elif pos == 2:
-            rospy.loginfo("-*- -*- -*-")
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Mid Point")
-            self.send_joint_goals(["joint_head_pan"], [-1.5])
+            self.send_joint_goals(["joint_head_pan"], [-1.4])
             rospy.loginfo("-*- -*- -*-")
         elif pos == 3:
-            rospy.loginfo("-*- -*- -*-")
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - End Point")
-            self.send_joint_goals(["joint_head_pan"], [1.5])
+            self.send_joint_goals(["joint_head_pan"], [1.4])
             rospy.loginfo("-*- -*- -*-")
 
 

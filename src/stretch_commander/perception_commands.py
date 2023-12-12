@@ -29,9 +29,9 @@ class StretchPerception:
         self.point_pub = rospy.Publisher(self.target_point_topic, PointStamped, queue_size=5)
         self.trigger_yolo_pub = rospy.Publisher(self.trigger_scan_topic, Bool, queue_size=5)
         self.marker_pub = rospy.Publisher("/target_point/marker", Marker, queue_size=5)
-        #bounding box testing:
-        self.test_pub=rospy.Publisher(self.bbox_topic, Detection2DArray,queue_size=5)
-        
+        # bounding box testing:
+        self.test_pub = rospy.Publisher(self.bbox_topic, Detection2DArray, queue_size=5)
+
         # Initialize variables and buffers:
         self.all_raw_bbox_points = []
         self.raw_bbox_points = []
@@ -77,7 +77,7 @@ class StretchPerception:
 
     # Extract bounding box dimensions and convert
     def point_cloud_callback(self, pc_data):
-        print("point cloud callback reached")
+        # print("point cloud callback reached")
         for detection in self.detections:
             print("detection from bbox callback: ", detection)
             # for testing:
@@ -97,7 +97,7 @@ class StretchPerception:
             ymin = bbox_center_y - height / 2
             ymax = bbox_center_y + height / 2
 
-            print("Bounding box center: ", bbox_center_x, bbox_center_y)
+            # print("Bounding box center: ", bbox_center_x, bbox_center_y)
 
             # creates actual bounding box points, saves to global raw_bbox_points
             # raw_bbox_points = [xmin, ymin, xmax,  ymax]
@@ -129,9 +129,9 @@ class StretchPerception:
                     # Get the XYZ points [meters]
 
                     (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
-                    print("X point converted. X coordinate: ", X)
-                    print("Y point converted. Y coordinate: ", Y)
-                    print("Z point converted. Z coordinate: ", Z)
+                    # print("X point converted. X coordinate: ", X)
+                    # print("Y point converted. Y coordinate: ", Y)
+                    # print("Z point converted. Z coordinate: ", Z)
 
                     # create point stamped object to use when transforming points:
                     D3_point = PointStamped()
@@ -223,7 +223,7 @@ class StretchPerception:
             return False
 
     def cluster_points(self, point_array):
-        print("Array passed into cluster_points():", point_array)
+        # print("Array passed into cluster_points():", point_array)
         point_arr = point_array
         final_point = PointStamped()
 
@@ -256,7 +256,7 @@ class StretchPerception:
                     point_arr[index].pop(index)
                 point_arr.append(updated_point)
 
-        print("point_arr: ", point_arr)
+        # print("point_arr: ", point_arr)
 
         final_point = self.find_average(point_arr[0], point_arr)
         self.final_point = final_point
@@ -276,12 +276,12 @@ class StretchPerception:
         return distance
 
     def find_average(self, current_point, point_arr):
-        print("From inside 'find_average': ")
-        print("current/first point length: ", len(current_point))
-        print("length of rest of array: ", len(point_arr))
+        # print("From inside 'find_average': ")
+        # print("current/first point length: ", len(current_point))
+        # print("length of rest of array: ", len(point_arr))
 
-        print("current/first point: ", current_point)
-        print("rest of array: ", point_arr)
+        # print("current/first point: ", current_point)
+        # print("rest of array: ", point_arr)
 
         # sums
         sum_x = current_point.point.x
@@ -301,6 +301,6 @@ class StretchPerception:
 
         return avg_point
 
-#sdef publish_test_box():
-    #create a bounding box for testing:
-    
+
+# sdef publish_test_box():
+# create a bounding box for testing:
