@@ -11,6 +11,7 @@ from geometry_msgs.msg import PointStamped
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool, Header
 from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Detection2DArray
+from visualization_msgs.msg import Marker
 
 
 class StretchPerception:
@@ -27,13 +28,29 @@ class StretchPerception:
         self.target_point_topic = "/target_point"
         self.point_pub = rospy.Publisher(self.target_point_topic, PointStamped, queue_size=5)
         self.trigger_yolo_pub = rospy.Publisher(self.trigger_scan_topic, Bool, queue_size=5)
-
+        self.marker_pub = rospy.Publisher("/target_point/marker", Marker, queue_size=5)
+        #bounding box testing:
+        self.test_pub=rospy.Publisher(self.bbox_topic, Detection2DArray,queue_size=5)
+        
         # Initialize variables and buffers:
         self.all_raw_bbox_points = []
         self.raw_bbox_points = []
         self.final_point = PointStamped()
         self.detections = []  # holds detections from /yolo/results
+        self.marker = Marker()
+        self.marker.header.frame_id = "/map"
+        self.marker.type = 2
+        self.marker.id = 0
+        # Set the scale of the marker
+        self.marker.scale.x = 1.0
+        self.marker.scale.y = 1.0
+        self.marker.scale.z = 1.0
 
+        # Set the color
+        self.marker.color.r = 0.0
+        self.marker.color.g = 1.0
+        self.marker.color.b = 0.0
+        self.marker.color.a = 1.0
         # self.bbox_time = rospy.Time()
 
         self.detected_objects = False
@@ -79,7 +96,7 @@ class StretchPerception:
             xmax = bbox_center_x + width / 2
             ymin = bbox_center_y - height / 2
             ymax = bbox_center_y + height / 2
-            
+
             print("Bounding box center: ", bbox_center_x, bbox_center_y)
 
             # creates actual bounding box points, saves to global raw_bbox_points
@@ -140,11 +157,11 @@ class StretchPerception:
                     target_time=bbox_time,
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
-                    fixed_frame="base_link", # VERIFY THIS IF THIS IS CORRECT
+                    fixed_frame="base_link",  # VERIFY THIS IF THIS IS CORRECT
                     timeout=rospy.Duration(10),
                 )
                 print("Transform created")
-                
+
                 # transform = tfBuffer.lookup_transform("base_link", "camera_color_optical_frame", rospy.Time())
 
                 transformed_points = [
@@ -155,9 +172,15 @@ class StretchPerception:
                 if self.filter_points(transformed_points):
                     # These are the points that will be published
                     self.detected_objects = True
-                    
-                    print("Final point to publish: ",self.final_point)
+
+                    print("Final point to publish: ", self.final_point)
                     self.point_pub.publish(self.final_point)
+                    self.marker.pose.position.x = self.final_point.point.x
+                    self.marker.pose.position.y = self.final_point.point.y
+                    self.marker.pose.position.z = self.final_point.point.z
+                    self.marker.header.stamp = rospy.Time.now()
+
+                    self.marker_pub.publish(self.marker)
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
@@ -278,44 +301,6 @@ class StretchPerception:
 
         return avg_point
 
-    ######### FUNCTIONS USED IN STRETCH LOCATION CALLBACK ##########
-
-    # takes in all final points and returns a list of points in ascending order based on their distance from the robot
-    """
-    def stretch_location_callback(self, stretch_location):
-        distances = []
-        
-        stretch_x = stretch_location. #What topic/type?
-        stretch_Y = stretch_location. #what topic/type?
-        stretch_Z = stretch_location. #what topic/type?
-        
-        for detection in self.final_points:
-            detected_X = detection.point.x
-            detected_Y = detection.point.y
-            detected_Z = detection.point.z
-            
-            distance=math.sqrt((detected_X-stretch_x)**2+(detected_Y-stretch_Y)**2+(detected_Z-stretch_Z)**2)
-            distances.append(distance)
-            
-        length=len(distances)
-        if length>=1:
-            self.point_pub(self.final_points[0])
-        else:
-            for i in range(length):
-                for j in range(length-i-1):
-                    if distances[j]>distances[j+1]:
-                        distances[j],distances[j+1]=distances[j+1],distances[j]
-                        self.final_points[j],self.final_points[j+1]=self.final_points[j+1],self.final_points[j]
-        
-            for points in self.final_points:
-                self.point_pub(points)
-            
-            
-        
-        
-        
-        
-        
-        for point in self.final_points:
-            distances.append(self.find_distance(point, robot))
-    """
+#sdef publish_test_box():
+    #create a bounding box for testing:
+    
