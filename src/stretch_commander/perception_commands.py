@@ -183,7 +183,7 @@ class StretchPerception:
                     self.marker.pose.position.z = self.final_point.point.z
                     self.marker.header.stamp = rospy.Time.now()
                     '''
-                    self.marker_pub.publish(self.marker)
+                    #self.marker_pub.publish(self.marker)
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
