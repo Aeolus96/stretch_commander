@@ -49,6 +49,9 @@ def state_machine(start_state: str):
 
         elif state == "detecting":
             # Wait for key press to continue
+
+            man.arm_up()
+            
             input("Press Enter to start detecting...")
 
             for i in range(3):  # Cycle through 3 camera positions
