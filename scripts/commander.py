@@ -79,7 +79,8 @@ def state_machine(start_state: str):
             time.sleep(1)
             # Wait for key press to continue
             input("Press Enter to start picking up landry...")
-            rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, 0.7))
+            rospy.loginfo(nav.pick_up_at_xyz(nav.target_point.x, nav.target_point.y, 1.0))
+            man.arm_extend()
             man.arm_down()
             time.sleep(5)
             man.gripper_close()

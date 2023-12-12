@@ -62,7 +62,7 @@ class StretchManipulation:
 
     def arm_extend(self):
         rospy.loginfo(f"{self.__class__.__name__}: Extending the arm")
-        self.send_joint_goals(["wrist_extension"], [0.40])
+        self.send_joint_goals(["wrist_extension"], [0.55])
         rospy.loginfo("-*- -*- -*-")
 
     def arm_fold(self):

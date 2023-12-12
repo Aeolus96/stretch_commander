@@ -11,7 +11,7 @@ from geometry_msgs.msg import PointStamped
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool, Header
 from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Detection2DArray
-from visualization_msgs.msg import Marker
+# from visualization_msgs.msg import Marker
 
 
 class StretchPerception:
@@ -159,7 +159,7 @@ class StretchPerception:
                     target_time=bbox_time,
                     source_frame="camera_color_optical_frame",
                     source_time=bbox_time,
-                    fixed_frame="base_link",  # VERIFY THIS IF THIS IS CORRECT
+                    fixed_frame="map",  # VERIFY THIS IF THIS IS CORRECT
                     timeout=rospy.Duration(10),
                 )
                 print("Transform created")
