@@ -329,5 +329,6 @@ class StretchPerception:
 
             detection_msg.bbox.center.x = x1 + detection_msg.bbox.size_x / 2
             detection_msg.bbox.center.y = y1 + detection_msg.bbox.size_y / 2
+            detection_array_msg.append(detection_msg)
 
             self.test_pub.publish(detection_array_msg)
