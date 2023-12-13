@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-import rospy
 import time
+
+import rospy
 from stretch_commander.joint_commands import StretchManipulation
 from stretch_commander.nav_commands import StretchNavigation
 from stretch_commander.perception_commands import StretchPerception
@@ -49,7 +50,7 @@ def state_machine(start_state: str):
 
         elif state == "detecting":
             # Wait for key press to continue
-            
+            '''
             input("Press Enter to start detecting...")
 
             for i in range(5):  # Cycle through 3 camera positions
@@ -73,6 +74,10 @@ def state_machine(start_state: str):
                 # nav.go_to_xya(4.0, 3.0, 0.0)  # go to hardcoded scanning pose
                 # nav.go_to_xya(4.0, 2.8, 0.0)  # go to hardcoded scanning pose
                 state = "detecting"
+            '''
+            nav.target_point.x = 2.998
+            nav.target_point.y = 2.282
+            state = "collecting"
 
         elif state == "collecting":
             # Get ready to pick up:
@@ -94,8 +99,8 @@ def state_machine(start_state: str):
 
         elif state == "dropoff":
             # Laundry drop off point (map frame):
-            fixed_dropoff_x = 1.492
-            fixed_dropoff_y = -0.274
+            fixed_dropoff_x = 1.0
+            fixed_dropoff_y = 0.0
             fixed_dropoff_z = 1.0
             # Wait for key press to continue
             input("Press Enter to start drop off...")
