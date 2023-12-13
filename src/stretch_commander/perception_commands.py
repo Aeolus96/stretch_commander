@@ -46,9 +46,9 @@ class StretchPerception:
         self.marker.id = 0
         #self.marker.action = self.marker.DELETEALL
         # Set the scale of the marker
-        self.marker.scale.x = 1.0
-        self.marker.scale.y = 1.0
-        self.marker.scale.z = 1.0
+        self.marker.scale.x = 0.1
+        self.marker.scale.y = 0.1
+        self.marker.scale.z = 0.1
 
         # Set the color
         self.marker.color.r = 0.0
