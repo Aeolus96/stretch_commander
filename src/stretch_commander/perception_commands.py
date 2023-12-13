@@ -224,7 +224,7 @@ class StretchPerception:
                 if point.point.z > final_point.point.z:
                     final_point = point
 
-        if not (final_point.point.z == 0.0 and final_point.x == 0.0 and final_point.y == 0.0):
+        if not (final_point.point.z == 0.0 and final_point.point.x == 0.0 and final_point.point.y == 0.0):
             self.final_point = final_point
             print("Point within threshold detected: ", final_point)
             return True
