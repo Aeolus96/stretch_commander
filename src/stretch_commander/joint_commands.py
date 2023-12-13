@@ -102,8 +102,8 @@ class StretchManipulation:
         rospy.loginfo("-*- -*- -*-")
 
     def look_for_shirts(self, pos):
-        rospy.loginfo(f"{self.__class__.__name__}: Tilting camera - 45 degrees")
-        self.send_joint_goals(["joint_head_tilt"], [-0.79])
+        rospy.loginfo(f"{self.__class__.__name__}: Tilting camera - 60 degrees")
+        self.send_joint_goals(["joint_head_tilt"], [-1.0])
         rospy.loginfo("-*- -*- -*-")
         self.gripper_close()
         self.wrist_up()
