@@ -37,8 +37,7 @@ class StretchPerception:
         self.raw_bbox_points = []
         self.final_point = PointStamped()
         self.detections = []  # holds detections from /yolo/results
-        
-        
+
         self.marker = Marker()
         self.marker.header.frame_id = "/map"
         self.marker.type = 2
@@ -53,7 +52,7 @@ class StretchPerception:
         self.marker.color.g = 1.0
         self.marker.color.b = 0.0
         self.marker.color.a = 1.0
-        
+
         # self.bbox_time = rospy.Time()
 
         self.detected_objects = False
@@ -124,18 +123,17 @@ class StretchPerception:
             # xyz_image=np.zeros((yMax-yMin,xMax-xMin,3),np.float32)
             row = 0
             col = 0
-            
+
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
-            
-            #only gets the center of the bounding box:
-                # ''' range(int(bbox_center_x - 1), int(bbox_center_x + 1)):
-                #     print(bbox_center_x - 1, bbox_center_x + 1)
-                #     for col in range(int(bbox_center_y - 1), int(bbox_center_y + 1)):
-                # '''        
-                    #print(bbox_center_y - 1, bbox_center_y + 1)
+                    # only gets the center of the bounding box:
+                    # ''' range(int(bbox_center_x - 1), int(bbox_center_x + 1)):
+                    #     print(bbox_center_x - 1, bbox_center_x + 1)
+                    #     for col in range(int(bbox_center_y - 1), int(bbox_center_y + 1)):
+                    # '''
+                    # print(bbox_center_y - 1, bbox_center_y + 1)
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
-                    #print("Index: ", index)
+                    # print("Index: ", index)
 
                     # Get the XYZ points [meters]
 
@@ -144,20 +142,21 @@ class StretchPerception:
                     # print("Y point converted. Y coordinate: ", Y)
                     # print("Z point converted. Z coordinate: ", Z)
 
-                    # create point stamped object to use when transforming points:
-                    D3_point = PointStamped()
+                    if row == bbox_center_y and col == bbox_center_x:
+                        # create point stamped object to use when transforming points:
+                        D3_point = PointStamped()
 
-                    # frame will eventually be 'usb_cam/image_raw'
-                    D3_point.header.frame_id = "camera_color_optical_frame"
-                    D3_point.header.stamp = detection.header.stamp
+                        # frame will eventually be 'usb_cam/image_raw'
+                        D3_point.header.frame_id = "camera_color_optical_frame"
+                        D3_point.header.stamp = detection.header.stamp
 
-                    D3_point.point.x = X
-                    D3_point.point.y = Y
-                    D3_point.point.z = Z
+                        D3_point.point.x = X
+                        D3_point.point.y = Y
+                        D3_point.point.z = Z
 
-                    # Append to array of D3 points in camera frame:
-                    D3_bbox_points.append(D3_point)
-                    print("Center Point: ", D3_point)
+                        # Append to array of D3 points in camera frame:
+                        D3_bbox_points.append(D3_point)
+                        print("Center Point: ", D3_point)
 
             # Transform D3 points to map frame
             # transformation info:
@@ -181,21 +180,21 @@ class StretchPerception:
                 ]
 
                 # Z height sorting and filtering clusters into a single point
-                #if self.filter_points(transformed_points):
+                # if self.filter_points(transformed_points):
                 if transformed_points[0]:
                     # These are the points that will be published
                     self.detected_objects = True
-                    self.final_point=transformed_points[0]
+                    self.final_point = transformed_points[0]
                     print("Final point to publish: ", self.final_point)
                     self.point_pub.publish(self.final_point)
-                    
+
                     self.marker.pose.position.x = self.final_point.point.x
                     self.marker.pose.position.y = self.final_point.point.y
                     self.marker.pose.position.z = self.final_point.point.z
                     self.marker.header.stamp = rospy.Time.now()
-                    
+
                     self.marker_pub.publish(self.marker)
-                    
+
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
 
@@ -317,21 +316,21 @@ class StretchPerception:
 
     def publish_test_box(self):
         # create a bounding box for testing:
-            detection_array_msg = Detection2DArray()
+        detection_array_msg = Detection2DArray()
 
-            x1 = 260
-            y1 = 540
-            x2 = 460
-            y2 = 740
+        x1 = 260
+        y1 = 540
+        x2 = 460
+        y2 = 740
 
-            detection_msg = Detection2D()
-            detection_msg.header.stamp=rospy.Time.now()
+        detection_msg = Detection2D()
+        detection_msg.header.stamp = rospy.Time.now()
 
-            detection_msg.bbox.size_x = x2 - x1
-            detection_msg.bbox.size_y = y2 - y1
+        detection_msg.bbox.size_x = x2 - x1
+        detection_msg.bbox.size_y = y2 - y1
 
-            detection_msg.bbox.center.x = x1 + detection_msg.bbox.size_x / 2
-            detection_msg.bbox.center.y = y1 + detection_msg.bbox.size_y / 2
-            detection_array_msg.detections.append(detection_msg)
+        detection_msg.bbox.center.x = x1 + detection_msg.bbox.size_x / 2
+        detection_msg.bbox.center.y = y1 + detection_msg.bbox.size_y / 2
+        detection_array_msg.detections.append(detection_msg)
 
-            self.test_pub.publish(detection_array_msg)
+        self.test_pub.publish(detection_array_msg)
