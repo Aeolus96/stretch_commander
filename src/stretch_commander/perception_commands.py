@@ -11,7 +11,7 @@ from geometry_msgs.msg import PointStamped
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool, Header
 from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Detection2DArray
-# from visualization_msgs.msg import Marker
+#from visualization_msgs.msg import Marker
 
 
 class StretchPerception:
@@ -37,6 +37,7 @@ class StretchPerception:
         self.raw_bbox_points = []
         self.final_point = PointStamped()
         self.detections = []  # holds detections from /yolo/results
+        
         '''
         self.marker = Marker()
         self.marker.header.frame_id = "/map"
@@ -123,8 +124,14 @@ class StretchPerception:
             # xyz_image=np.zeros((yMax-yMin,xMax-xMin,3),np.float32)
             row = 0
             col = 0
+            '''
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
+            '''
+            #only gets the center of the bounding box:
+            for row in range(bbox_center_x, bbox_center_x):
+                for col in range(bbox_center_y, bbox_center_y):
+                    
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
                     # print("Index: ", index)
 
@@ -148,8 +155,9 @@ class StretchPerception:
 
                     # Append to array of D3 points in camera frame:
                     D3_bbox_points.append(D3_point)
+                    print("Center Point: ", D3_point)
 
-            # Transfrom D3 points to map frame
+            # Transform D3 points to map frame
             # transformation info:
 
             try:
@@ -182,9 +190,9 @@ class StretchPerception:
                     self.marker.pose.position.y = self.final_point.point.y
                     self.marker.pose.position.z = self.final_point.point.z
                     self.marker.header.stamp = rospy.Time.now()
+                    
+                    self.marker_pub.publish(self.marker)
                     '''
-                    #self.marker_pub.publish(self.marker)
-
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
 
