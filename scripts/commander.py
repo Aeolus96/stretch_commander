@@ -50,14 +50,14 @@ def state_machine(start_state: str):
 
         elif state == "detecting":
             # Wait for key press to continue
-            '''
+
             input("Press Enter to start detecting...")
 
             for i in range(5):  # Cycle through 3 camera positions
                 man.look_for_shirts(i + 1)
                 time.sleep(3)  # wait for movement to complete
                 per.trigger_yolo()
-                #per.publish_test_box()
+                # per.publish_test_box()
                 time.sleep(5)  # wait for detection to complete
                 if per.detected_objects:  # Prevents multiple Detection2DArray publishes
                     break
@@ -74,10 +74,10 @@ def state_machine(start_state: str):
                 # nav.go_to_xya(4.0, 3.0, 0.0)  # go to hardcoded scanning pose
                 # nav.go_to_xya(4.0, 2.8, 0.0)  # go to hardcoded scanning pose
                 state = "detecting"
-            '''
-            nav.target_point.x = 2.998
-            nav.target_point.y = 2.282
-            state = "collecting"
+
+            # nav.target_point.x = 2.998
+            # nav.target_point.y = 2.282
+            # state = "collecting"
 
         elif state == "collecting":
             # Get ready to pick up:
