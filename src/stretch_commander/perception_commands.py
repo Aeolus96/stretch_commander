@@ -28,7 +28,7 @@ class StretchPerception:
         self.target_point_topic = "/target_point"
         self.point_pub = rospy.Publisher(self.target_point_topic, PointStamped, queue_size=5)
         self.trigger_yolo_pub = rospy.Publisher(self.trigger_scan_topic, Bool, queue_size=5)
-        #self.marker_pub = rospy.Publisher("/target_marker", Marker, queue_size=5)
+        self.marker_pub = rospy.Publisher("/target_marker", Marker, queue_size=5)
         # bounding box testing:
         self.test_pub = rospy.Publisher(self.bbox_topic, Detection2DArray, queue_size=5)
 
@@ -179,10 +179,11 @@ class StretchPerception:
                 ]
 
                 # Z height sorting and filtering clusters into a single point
-                if self.filter_points(transformed_points):
+                #if self.filter_points(transformed_points):
+                if self.transformed_points[0]:
                     # These are the points that will be published
                     self.detected_objects = True
-
+                    self.final_point=self.transformed_points[0]
                     print("Final point to publish: ", self.final_point)
                     self.point_pub.publish(self.final_point)
                     
