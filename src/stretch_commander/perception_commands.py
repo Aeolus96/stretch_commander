@@ -11,7 +11,7 @@ from geometry_msgs.msg import PointStamped
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool, Header
 from vision_msgs.msg import BoundingBox2D, BoundingBox2DArray, Detection2D, Detection2DArray
-#from visualization_msgs.msg import Marker
+from visualization_msgs.msg import Marker
 
 
 class StretchPerception:
@@ -38,7 +38,7 @@ class StretchPerception:
         self.final_point = PointStamped()
         self.detections = []  # holds detections from /yolo/results
         
-        '''
+        
         self.marker = Marker()
         self.marker.header.frame_id = "/map"
         self.marker.type = 2
@@ -53,7 +53,7 @@ class StretchPerception:
         self.marker.color.g = 1.0
         self.marker.color.b = 0.0
         self.marker.color.a = 1.0
-        '''
+        
         # self.bbox_time = rospy.Time()
 
         self.detected_objects = False
@@ -185,14 +185,14 @@ class StretchPerception:
 
                     print("Final point to publish: ", self.final_point)
                     self.point_pub.publish(self.final_point)
-                    '''
+                    
                     self.marker.pose.position.x = self.final_point.point.x
                     self.marker.pose.position.y = self.final_point.point.y
                     self.marker.pose.position.z = self.final_point.point.z
                     self.marker.header.stamp = rospy.Time.now()
                     
                     self.marker_pub.publish(self.marker)
-                    '''
+                    
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
 
