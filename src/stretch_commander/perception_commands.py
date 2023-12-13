@@ -312,22 +312,22 @@ class StretchPerception:
 
         return avg_point
 
-def publish_test_box(self):
-    # create a bounding box for testing:
-        detection_array_msg = Detection2DArray()
+    def publish_test_box(self):
+        # create a bounding box for testing:
+            detection_array_msg = Detection2DArray()
 
-        x1 = 260
-        y1 = 540
-        x2 = 460
-        y2 = 740
+            x1 = 260
+            y1 = 540
+            x2 = 460
+            y2 = 740
 
-        detection_msg = Detection2D()
-        detection_msg.header.stamp=rospy.Time.now()
+            detection_msg = Detection2D()
+            detection_msg.header.stamp=rospy.Time.now()
 
-        detection_msg.bbox.size_x = x2 - x1
-        detection_msg.bbox.size_y = y2 - y1
+            detection_msg.bbox.size_x = x2 - x1
+            detection_msg.bbox.size_y = y2 - y1
 
-        detection_msg.bbox.center.x = x1 + detection_msg.bbox.size_x / 2
-        detection_msg.bbox.center.y = y1 + detection_msg.bbox.size_y / 2
+            detection_msg.bbox.center.x = x1 + detection_msg.bbox.size_x / 2
+            detection_msg.bbox.center.y = y1 + detection_msg.bbox.size_y / 2
 
-        self.test_pub.publish(detection_array_msg)
+            self.test_pub.publish(detection_array_msg)
