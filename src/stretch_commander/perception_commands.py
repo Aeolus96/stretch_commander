@@ -44,7 +44,7 @@ class StretchPerception:
         self.marker.header.frame_id = "map"
         self.marker.type = 2
         self.marker.id = 0
-        #self.marker.action = Marker.DELETE_ALL
+        self.marker.action = Marker.DELETEALL
 
         # Set the scale of the marker
         self.marker.scale.x = 1.0
@@ -198,6 +198,7 @@ class StretchPerception:
                     self.marker.header.stamp = rospy.Time.now()
                     self.marker_array_msg.markers.append(self.marker)
                     self.marker_pub.publish(self.marker)
+                    rospy.sleep(0.2)
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
