@@ -315,15 +315,14 @@ class StretchPerception:
 def publish_test_box(self):
     # create a bounding box for testing:
         detection_array_msg = Detection2DArray()
-        detection_array_msg.header = "camera_color_optical_frame"
 
-        x1 = 10
-        y1 = 10
-        x2 = 20
-        y2 = 20
+        x1 = 260
+        y1 = 540
+        x2 = 460
+        y2 = 740
 
         detection_msg = Detection2D()
-        detection_msg.header = "camera_color_optical_frame"
+        detection_msg.header.stamp=rospy.Time.now()
 
         detection_msg.bbox.size_x = x2 - x1
         detection_msg.bbox.size_y = y2 - y1
