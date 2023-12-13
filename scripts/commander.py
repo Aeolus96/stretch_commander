@@ -70,6 +70,8 @@ def state_machine(start_state: str):
                 per.detected_objects = False  # Reset detection flag
             else:
                 rospy.loginfo("No objects detected")
+                # nav.go_to_xya(4.0, 3.0, 0.0)  # go to hardcoded scanning pose
+                # nav.go_to_xya(4.0, 2.8, 0.0)  # go to hardcoded scanning pose
                 state = "detecting"
 
         elif state == "collecting":
