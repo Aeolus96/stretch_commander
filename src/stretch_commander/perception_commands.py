@@ -44,7 +44,7 @@ class StretchPerception:
         self.marker.header.frame_id = "map"
         self.marker.type = 2
         self.marker.id = 0
-        #self.marker.action = self.marker.DELETEALL
+        # self.marker.action = self.marker.DELETEALL
         # Set the scale of the marker
         self.marker.scale.x = 0.1
         self.marker.scale.y = 0.1
@@ -117,7 +117,7 @@ class StretchPerception:
                     # print("Index: ", index)
 
                     # Get the XYZ points [meters]
-                    
+
                     # print("X point converted. X coordinate: ", X)
                     # print("Y point converted. Y coordinate: ", Y)
                     # print("Z point converted. Z coordinate: ", Z)
@@ -175,7 +175,6 @@ class StretchPerception:
                     self.marker.header.stamp = rospy.Time.now()
                     self.marker_array_msg.markers.append(self.marker)
                     self.marker_pub.publish(self.marker)
-                    
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
@@ -183,6 +182,8 @@ class StretchPerception:
         self.final_point = PointStamped()
         self.detections = []
 
+    # ended up not using this:
+    """
     def filter_points(self, points):
         print("filtering points")
         # filters all D3 points within one bounding box, and returns the highest point
@@ -295,6 +296,7 @@ class StretchPerception:
         avg_point = PointStamped(point.header, self.Point(avg_x, avg_y, avg_z))
 
         return avg_point
+    """
 
     def publish_test_box(self):
         # create a bounding box for testing:
