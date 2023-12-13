@@ -41,11 +41,11 @@ class StretchPerception:
         self.marker_array_msg = MarkerArray()
         self.marker = Marker()
 
-        self.marker.action = Marker.DELETE_ALL
-
         self.marker.header.frame_id = "map"
         self.marker.type = 2
         self.marker.id = 0
+        self.marker.action = Marker.DELETE_ALL
+
         # Set the scale of the marker
         self.marker.scale.x = 1.0
         self.marker.scale.y = 1.0
