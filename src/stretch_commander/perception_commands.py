@@ -44,7 +44,7 @@ class StretchPerception:
         self.marker.header.frame_id = "map"
         self.marker.type = 2
         self.marker.id = 0
-        self.marker.action = Marker.DELETEALL
+        self.marker.action = self.marker.DELETEALL
 
         # Set the scale of the marker
         self.marker.scale.x = 1.0
@@ -105,37 +105,15 @@ class StretchPerception:
 
             # print("Bounding box center: ", bbox_center_x, bbox_center_y)
 
-            # creates actual bounding box points, saves to global raw_bbox_points
-            # raw_bbox_points = [xmin, ymin, xmax,  ymax]
-
-            # to reduce any duplicates, will only add bbox to list (to be processed) if it doesn't already exist
-            # if raw_bbox_points not in self.all_raw_bbox_points:
-            # self.all_raw_bbox_points.append(raw_bbox_points)
-
-            # for raw_bbox in self.all_raw_bbox_points
             D3_bbox_points = []
-
-            # (global) raw_bbox_points =[xmin, ymin, xmax,  ymax]
-            # bbox globals
-            # xMin = raw_bbox[0]
-            # xMax = raw_bbox[2]
-            # yMin = raw_bbox[1]
-            # yMax = raw_bbox[3]
 
             # bbox pixels to D3 points
 
-            # xyz_image=np.zeros((yMax-yMin,xMax-xMin,3),np.float32)
             row = 0
             col = 0
 
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
-                    # only gets the center of the bounding box:
-                    # ''' range(int(bbox_center_x - 1), int(bbox_center_x + 1)):
-                    #     print(bbox_center_x - 1, bbox_center_x + 1)
-                    #     for col in range(int(bbox_center_y - 1), int(bbox_center_y + 1)):
-                    # '''
-                    # print(bbox_center_y - 1, bbox_center_y + 1)
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
                     # print("Index: ", index)
 
@@ -198,7 +176,7 @@ class StretchPerception:
                     self.marker.header.stamp = rospy.Time.now()
                     self.marker_array_msg.markers.append(self.marker)
                     self.marker_pub.publish(self.marker)
-                    rospy.sleep(0.2)
+                    
 
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as error:
                 print("error making transformation: ", error)
