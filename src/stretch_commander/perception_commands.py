@@ -180,10 +180,10 @@ class StretchPerception:
 
                 # Z height sorting and filtering clusters into a single point
                 #if self.filter_points(transformed_points):
-                if self.transformed_points[0]:
+                if transformed_points[0]:
                     # These are the points that will be published
                     self.detected_objects = True
-                    self.final_point=self.transformed_points[0]
+                    self.final_point=transformed_points[0]
                     print("Final point to publish: ", self.final_point)
                     self.point_pub.publish(self.final_point)
                     
