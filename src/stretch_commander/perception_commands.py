@@ -44,8 +44,7 @@ class StretchPerception:
         self.marker.header.frame_id = "map"
         self.marker.type = 2
         self.marker.id = 0
-        self.marker.action = self.marker.DELETEALL
-
+        #self.marker.action = self.marker.DELETEALL
         # Set the scale of the marker
         self.marker.scale.x = 1.0
         self.marker.scale.y = 1.0
@@ -118,13 +117,13 @@ class StretchPerception:
                     # print("Index: ", index)
 
                     # Get the XYZ points [meters]
-
-                    (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
+                    
                     # print("X point converted. X coordinate: ", X)
                     # print("Y point converted. Y coordinate: ", Y)
                     # print("Z point converted. Z coordinate: ", Z)
 
                     if row == int(bbox_center_y) and col == int(bbox_center_x):
+                        (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
                         # create point stamped object to use when transforming points:
                         D3_point = PointStamped()
 
