@@ -124,18 +124,18 @@ class StretchPerception:
             # xyz_image=np.zeros((yMax-yMin,xMax-xMin,3),np.float32)
             row = 0
             col = 0
-            '''
+            
             for row in range(int(ymin), int(ymax)):
                 for col in range(int(xmin), int(xmax)):
-            '''
+            
             #only gets the center of the bounding box:
-            for row in range(int(bbox_center_x - 1), int(bbox_center_x + 1)):
-                print(bbox_center_x - 1, bbox_center_x + 1)
-                for col in range(int(bbox_center_y - 1), int(bbox_center_y + 1)):
-                    
-                    print(bbox_center_y - 1, bbox_center_y + 1)
+                # ''' range(int(bbox_center_x - 1), int(bbox_center_x + 1)):
+                #     print(bbox_center_x - 1, bbox_center_x + 1)
+                #     for col in range(int(bbox_center_y - 1), int(bbox_center_y + 1)):
+                # '''        
+                    #print(bbox_center_y - 1, bbox_center_y + 1)
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
-                    print("Index: ", index)
+                    #print("Index: ", index)
 
                     # Get the XYZ points [meters]
 
