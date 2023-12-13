@@ -139,11 +139,9 @@ class StretchPerception:
                         D3_bbox_points.append(D3_point)
                         print("Center Point: ", D3_point)
 
-            # Transform D3 points to map frame
+            # Transform 3D points to map frame
             # transformation info:
-
             try:
-                # tfBuffer.waitForTransform("camera_color_optical_frame", "map", rospy.Time(0), rospy.Duration(10.0))
                 transform = self.tfBuffer.lookup_transform_full(
                     target_frame="map",
                     target_time=bbox_time,
@@ -154,13 +152,12 @@ class StretchPerception:
                 )
                 print("Transform created")
 
-                # transform = tfBuffer.lookup_transform("base_link", "camera_color_optical_frame", rospy.Time())
 
                 transformed_points = [
                     tf2_geometry_msgs.do_transform_point(point, transform) for point in D3_bbox_points
                 ]
 
-                # Z height sorting and filtering clusters into a single point
+                # Used to be Z height sorting and filtering clusters into a single point, since modified to return center of bbox
                 # if self.filter_points(transformed_points):
                 if transformed_points[0]:
                     # These are the points that will be published
