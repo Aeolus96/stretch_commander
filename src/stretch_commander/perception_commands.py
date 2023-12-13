@@ -43,9 +43,9 @@ class StretchPerception:
         self.marker.type = 2
         self.marker.id = 0
         # Set the scale of the marker
-        self.marker.scale.x = 1.0
-        self.marker.scale.y = 1.0
-        self.marker.scale.z = 1.0
+        self.marker.scale.x = 3.0
+        self.marker.scale.y = 3.0
+        self.marker.scale.z = 3.0
 
         # Set the color
         self.marker.color.r = 0.0
