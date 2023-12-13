@@ -143,7 +143,7 @@ class StretchPerception:
                     # print("Z point converted. Z coordinate: ", Z)
 
                     if row == int(bbox_center_y) and col == int(bbox_center_x):
-                        # create point stamped object to use when transforming points:  
+                        # create point stamped object to use when transforming points:
                         D3_point = PointStamped()
 
                         # frame will eventually be 'usb_cam/image_raw'

@@ -105,6 +105,7 @@ class StretchManipulation:
         rospy.loginfo(f"{self.__class__.__name__}: Tilting camera - 45 degrees")
         self.send_joint_goals(["joint_head_tilt"], [-0.79])
         rospy.loginfo("-*- -*- -*-")
+        self.gripper_close()
         self.wrist_up()
         self.wrist_in()
         time.sleep(1)

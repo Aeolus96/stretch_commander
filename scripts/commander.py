@@ -92,17 +92,18 @@ def state_machine(start_state: str):
 
         elif state == "dropoff":
             # Laundry drop off point (map frame):
-            fixed_dropoff_x = 0.0
-            fixed_dropoff_y = 0.0
-            fixed_dropoff_z = 0.7
+            fixed_dropoff_x = 1.492
+            fixed_dropoff_y = -0.274
+            fixed_dropoff_z = 1.0
             # Wait for key press to continue
             input("Press Enter to start drop off...")
 
             # Go to drop off point
             rospy.loginfo(nav.pick_up_at_xyz(fixed_dropoff_x, fixed_dropoff_y, fixed_dropoff_z))
             man.gripper_open()
-            man.arm_fold()
             man.wrist_up()
+            man.wrist_in()
+            man.arm_fold()
 
             # Add to objects collected - no feedback or verification implemented for demo purposes
             objects_collected += 1
