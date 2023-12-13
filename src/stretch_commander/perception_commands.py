@@ -133,7 +133,7 @@ class StretchPerception:
                 for col in range(int(bbox_center_y), int(bbox_center_y)):
                     
                     index = (row * pc_data.row_step) + (col * pc_data.point_step)
-                    # print("Index: ", index)
+                    print("Index: ", index)
 
                     # Get the XYZ points [meters]
 
