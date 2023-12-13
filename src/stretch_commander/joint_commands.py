@@ -116,10 +116,18 @@ class StretchManipulation:
             self.send_joint_goals(["joint_head_pan"], [0])
             rospy.loginfo("-*- -*- -*-")
         elif pos == 2:
+            rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Mid Right")
+            self.send_joint_goals(["joint_head_pan"], [-0.7])
+            rospy.loginfo("-*- -*- -*-")
+        elif pos == 3:
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Right")
             self.send_joint_goals(["joint_head_pan"], [-1.4])
             rospy.loginfo("-*- -*- -*-")
-        elif pos == 3:
+        elif pos == 4:
+            rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Mid Left")
+            self.send_joint_goals(["joint_head_pan"], [0.7])
+            rospy.loginfo("-*- -*- -*-")
+        elif pos == 5:
             rospy.loginfo(f"{self.__class__.__name__}: Moving camera - Left")
             self.send_joint_goals(["joint_head_pan"], [1.4])
             rospy.loginfo("-*- -*- -*-")
