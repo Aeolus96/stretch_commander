@@ -52,7 +52,7 @@ def state_machine(start_state: str):
             
             input("Press Enter to start detecting...")
 
-            for i in range(3):  # Cycle through 3 camera positions
+            for i in range(5):  # Cycle through 3 camera positions
                 man.look_for_shirts(i + 1)
                 time.sleep(3)  # wait for movement to complete
                 per.trigger_yolo()
