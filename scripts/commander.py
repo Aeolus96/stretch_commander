@@ -57,7 +57,7 @@ def state_machine(start_state: str):
                 time.sleep(3)  # wait for movement to complete
                 per.trigger_yolo()
                 #per.publish_test_box()
-                time.sleep(10)  # wait for detection to complete
+                time.sleep(5)  # wait for detection to complete
                 if per.detected_objects:  # Prevents multiple Detection2DArray publishes
                     break
 
