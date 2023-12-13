@@ -188,9 +188,9 @@ class StretchPerception:
                     print("Final point to publish: ", self.final_point)
                     self.point_pub.publish(self.final_point)
 
-                    self.marker.pose.position.x = self.final_point.point.x
-                    self.marker.pose.position.y = self.final_point.point.y
-                    self.marker.pose.position.z = self.final_point.point.z
+                    self.marker.pose.position.x = transformed_points[0].point.x
+                    self.marker.pose.position.y = transformed_points[0].point.y
+                    self.marker.pose.position.z = transformed_points[0].point.z
                     self.marker.header.stamp = rospy.Time.now()
 
                     self.marker_pub.publish(self.marker)
