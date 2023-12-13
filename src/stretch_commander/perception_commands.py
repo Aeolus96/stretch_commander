@@ -137,7 +137,7 @@ class StretchPerception:
 
                     # Get the XYZ points [meters]
 
-                    (X, Y, Z, rgb) = struct.unpack_from("ffff", pc_data.data, offset=index)
+                    (X, Y, Z, rgb) = struct.unpack_from("fffl", pc_data.data, offset=index)
                     # print("X point converted. X coordinate: ", X)
                     # print("Y point converted. Y coordinate: ", Y)
                     # print("Z point converted. Z coordinate: ", Z)
