@@ -39,7 +39,7 @@ class StretchPerception:
         self.detections = []  # holds detections from /yolo/results
 
         self.marker = Marker()
-        self.marker.header.frame_id = "/map"
+        self.marker.header.frame_id = "map"
         self.marker.type = 2
         self.marker.id = 0
         # Set the scale of the marker
